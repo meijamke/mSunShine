@@ -2,6 +2,8 @@ package com.example.msunshine.utilities;
 
 import android.content.Context;
 
+import com.example.msunshine.R;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -102,6 +104,10 @@ public class ParseJSONUtils {
      * }
      * }
      */
+
+    private static final int[] WEEK_NAME =
+            {R.string.monday, R.string.tuesday, R.string.wednesday, R.string.thursday, R.string.friday, R.string.saturday, R.string.sunday};
+
     public static String[] getForecastWeatherStringFromJSON(String forecastJsonStr) throws JSONException {
 
         //数据成功返回时code=1，失败时coed=0
@@ -160,15 +166,15 @@ public class ParseJSONUtils {
 
             parsedWeatherData[i] =
                     date + "\n" +
-                            dayOfWeek + "\n" +
-                            dayWeather + "\n" +
-                            nightWeather + "\n" +
-                            dayTemp + "\n" +
-                            nightTemp + "\n" +
-                            dayWindDirection + "\n" +
-                            nightWindDirection + "\n" +
-                            dayWindPower + "\n" +
-                            nightWindPower + "\n\n";
+                            WEEK_NAME[Integer.valueOf(dayOfWeek) - 1] + "\n" +
+                            R.string.day_weather + dayWeather + "\n" +
+                            R.string.night_weather + nightWeather + "\n" +
+                            R.string.day_temp + dayTemp + "\n" +
+                            R.string.night_temp + nightTemp + "\n" +
+                            R.string.day_wind_direction + dayWindDirection + "\n" +
+                            R.string.night_wind_direction + nightWindDirection + "\n" +
+                            R.string.day_wind_power + dayWindPower + "\n" +
+                            R.string.night_wind_power + nightWindPower + "\n\n";
         }
         return parsedWeatherData;
     }
