@@ -12,6 +12,10 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class NetworkUtils {
 
+    private static final String CHINA_WEATHER_DATA =
+            "https://www.mxnzp.com/api/weather/current/";
+
+    //udacity学习使用
     private static final String STATIC_WEATHER_DATA =
             "https://andfun-weather.udacity.com/staticweather";
 
@@ -24,6 +28,25 @@ public class NetworkUtils {
     private static final String numDays = "14";
     private static final String units = "metric";
 
+    /**
+     * @param query_city：必须是中文，或者将其转换成中文
+     * @return 返回网址URL
+     */
+    public static URL mBuildUrl(String query_city) {
+
+        Uri uri = Uri.parse(CHINA_WEATHER_DATA).buildUpon()
+                .appendPath(query_city)
+                .build();
+        URL url = null;
+        try {
+            url = new URL(uri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return url;
+    }
+
+    //udacity学习使用
     public static URL buildUrl(String query) {
         Uri uri = Uri.parse(STATIC_WEATHER_DATA).buildUpon()
                 .appendQueryParameter(QUERY_PARAM, query)
