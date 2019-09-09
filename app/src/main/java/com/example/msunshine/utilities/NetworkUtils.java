@@ -12,8 +12,12 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class NetworkUtils {
 
-    private static final String CHINA_WEATHER_DATA =
+    private static final String CHINA_CURRENT_WEATHER_DATA =
             "https://www.mxnzp.com/api/weather/current/";
+
+
+    private static final String CHINA_FORECAST_WEATHER_DATA =
+            "https://www.mxnzp.com/api/weather/forecast/";
 
     //udacity学习使用
     private static final String STATIC_WEATHER_DATA =
@@ -34,7 +38,7 @@ public class NetworkUtils {
      */
     public static URL mBuildUrl(String query_city) {
 
-        Uri uri = Uri.parse(CHINA_WEATHER_DATA).buildUpon()
+        Uri uri = Uri.parse(CHINA_FORECAST_WEATHER_DATA).buildUpon()
                 .appendPath(query_city)
                 .build();
         URL url = null;

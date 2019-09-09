@@ -7,6 +7,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class ParseJSONUtils {
+
     /**
      * 返回数据的参考格式
      * {
@@ -23,56 +24,56 @@ public class ParseJSONUtils {
      * "reportTime": "2019-09-09 12:15:02"
      * }
      * }
+     *
      */
-
-    public static String getCurrentWeatherStringFromJSON(String forecastJsonStr) throws JSONException {
-        //数据成功返回时code=1，失败时coed=0
-        final String RESULT_CODE = "code";
-        //数据请求结果的描述信息
-        final String RESULT_MESSAGE = "msg";
-        //返回的数据
-        final String RESULT_DATA = "data";
-
-        final String ADDRESS = "address";
-        final String TEMPERATURE = "temp";
-        final String WEATHER = "weather";
-        final String WIND_DIRECTION = "windDirection";
-        final String WIND_POWER = "windPower";
-        final String HUMIDITY = "humidity";
-        final String DATE = "reportTime";
-
-        String parsedWeatherData;
-        JSONObject jsonObject = new JSONObject(forecastJsonStr);
-
-        //判断是否拿到了数据
-        if (jsonObject.has(RESULT_CODE)) {
-            int code = jsonObject.getInt(RESULT_CODE);
-            if (code == 0) {
-                parsedWeatherData = jsonObject.getString(RESULT_MESSAGE) + "\n";
-                return parsedWeatherData;
-            }
-        }
-
-        JSONObject data = jsonObject.getJSONObject(RESULT_DATA);
-
-        String city = data.getString(ADDRESS);
-        String temp = data.getString(TEMPERATURE);
-        String weather = data.getString(WEATHER);
-        String windDirection = data.getString(WIND_DIRECTION);
-        String windPower = data.getString(WIND_POWER);
-        String humidity = data.getString(HUMIDITY);
-        String date = data.getString(DATE);
-
-        parsedWeatherData =
-                city + "\n" +
-                        temp + "\n" +
-                        weather + "\n" +
-                        windDirection + "\n" +
-                        windPower + "\n" +
-                        humidity + "\n" +
-                        date;
-        return parsedWeatherData;
-    }
+//    public static String getCurrentWeatherStringFromJSON(String forecastJsonStr) throws JSONException {
+//        //数据成功返回时code=1，失败时coed=0
+//        final String RESULT_CODE = "code";
+//        //数据请求结果的描述信息
+//        final String RESULT_MESSAGE = "msg";
+//        //返回的数据
+//        final String RESULT_DATA = "data";
+//
+//        final String ADDRESS = "address";
+//        final String TEMPERATURE = "temp";
+//        final String WEATHER = "weather";
+//        final String WIND_DIRECTION = "windDirection";
+//        final String WIND_POWER = "windPower";
+//        final String HUMIDITY = "humidity";
+//        final String DATE = "reportTime";
+//
+//        String parsedWeatherData;
+//        JSONObject jsonObject = new JSONObject(forecastJsonStr);
+//
+//        //判断是否拿到了数据
+//        if (jsonObject.has(RESULT_CODE)) {
+//            int code = jsonObject.getInt(RESULT_CODE);
+//            if (code == 0) {
+//                parsedWeatherData = jsonObject.getString(RESULT_MESSAGE) + "\n";
+//                return parsedWeatherData;
+//            }
+//        }
+//
+//        JSONObject data = jsonObject.getJSONObject(RESULT_DATA);
+//
+//        String city = data.getString(ADDRESS);
+//        String temp = data.getString(TEMPERATURE);
+//        String weather = data.getString(WEATHER);
+//        String windDirection = data.getString(WIND_DIRECTION);
+//        String windPower = data.getString(WIND_POWER);
+//        String humidity = data.getString(HUMIDITY);
+//        String date = data.getString(DATE).split(" ")[0];
+//
+//        parsedWeatherData =
+//                city + "\n" +
+//                temp + "\n" +
+//                weather + "\n" +
+//                windDirection + "\n" +
+//                windPower + "\n" +
+//                humidity + "\n" +
+//                date;
+//        return parsedWeatherData;
+//    }
 
     /**
      * 返回数据的参考格式
@@ -115,7 +116,7 @@ public class ParseJSONUtils {
         final String ADDRESS = "address";
         final String FORECAST = "forecasts";
 
-        final String DATE = "reportTime";
+        final String DATE = "date";
         final String DAY_OF_WEEK = "dayOfWeek";
         final String DAY_WEATHER = "dayWeather";
         final String NIGHT_WEATHER = "nightWeather";
@@ -126,24 +127,24 @@ public class ParseJSONUtils {
         final String DAY_WIND_POWER = "dayWindPower";
         final String NIGHT_WIND_POWER = "nightWindPower";
 
-        JSONObject jsonObject = new JSONObject(forecastJsonStr);
+        JSONObject forecastJson = new JSONObject(forecastJsonStr);
 
         //判断是否拿到了数据
-        if (jsonObject.has(RESULT_CODE)) {
-            int code = jsonObject.getInt(RESULT_CODE);
+        if (forecastJson.has(RESULT_CODE)) {
+            int code = forecastJson.getInt(RESULT_CODE);
             if (code == 0)
-                return new String[]{jsonObject.getString(RESULT_MESSAGE) + "\n"};
+                return new String[]{forecastJson.getString(RESULT_MESSAGE) + "\n"};
         }
 
-        JSONObject data = jsonObject.getJSONObject(RESULT_DATA);
-        String city = data.getString(ADDRESS);
+        JSONObject data = forecastJson.getJSONObject(RESULT_DATA);
 
+        String city = data.getString(ADDRESS);
         JSONArray forecast = data.getJSONArray(FORECAST);
 
-        String[] parsedWeatherData = new String[forecast.length()];
+        String[] parsedWeatherData = new String[forecast.length() + 1];
         parsedWeatherData[0] = city + "\n";
 
-        for (int i = 1; i < forecast.length(); i++) {
+        for (int i = 1; i <= forecast.length(); i++) {
             JSONObject dayForecast = forecast.getJSONObject(i - 1);
 
             String date = dayForecast.getString(DATE);

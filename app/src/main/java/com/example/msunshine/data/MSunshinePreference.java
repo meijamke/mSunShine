@@ -6,10 +6,9 @@ public class MSunshinePreference {
 //    udacity学习使用
 //    private static String DEFAULT_LOCATION = "94043,USA";
 
-    public static String defaultPreference() {
+    public static String getDefaultPreference() {
         return CHINA_DEFAULT_LOCATION;
 //        udacity学习使用
 //        return DEFAULT_LOCATION;
     }
-
 }
