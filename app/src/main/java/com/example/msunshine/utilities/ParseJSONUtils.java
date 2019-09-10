@@ -2,8 +2,6 @@ package com.example.msunshine.utilities;
 
 import android.content.Context;
 
-import com.example.msunshine.R;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -105,8 +103,8 @@ public class ParseJSONUtils {
      * }
      */
 
-    private static final int[] WEEK_NAME =
-            {R.string.monday, R.string.tuesday, R.string.wednesday, R.string.thursday, R.string.friday, R.string.saturday, R.string.sunday};
+    private static final String[] WEEK_NAME =
+            {"周一", "周二", "周三", "周四", "周五", "周六", "周日"};
 
     public static String[] getForecastWeatherStringFromJSON(String forecastJsonStr) throws JSONException {
 
@@ -167,14 +165,14 @@ public class ParseJSONUtils {
             parsedWeatherData[i] =
                     date + "\n" +
                             WEEK_NAME[Integer.valueOf(dayOfWeek) - 1] + "\n" +
-                            R.string.day_weather + dayWeather + "\n" +
-                            R.string.night_weather + nightWeather + "\n" +
-                            R.string.day_temp + dayTemp + "\n" +
-                            R.string.night_temp + nightTemp + "\n" +
-                            R.string.day_wind_direction + dayWindDirection + "\n" +
-                            R.string.night_wind_direction + nightWindDirection + "\n" +
-                            R.string.day_wind_power + dayWindPower + "\n" +
-                            R.string.night_wind_power + nightWindPower + "\n\n";
+                            "白天天气：" + dayWeather + "\n" +
+                            "晚上天气：" + nightWeather + "\n" +
+                            "白天温度：" + dayTemp + "\n" +
+                            "晚上温度：" + nightTemp + "\n" +
+                            "白天风向：" + dayWindDirection + "\n" +
+                            "晚上风向：" + nightWindDirection + "\n" +
+                            "白天风力：" + dayWindPower + "\n" +
+                            "晚上风力：" + nightWindPower + "\n\n";
         }
         return parsedWeatherData;
     }

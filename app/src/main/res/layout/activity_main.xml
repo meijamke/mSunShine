@@ -3,17 +3,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:gpb="http://schemas.android.com/apk/res-auto"
     tools:context=".MainActivity">
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textEditPasteWindowLayout="@android:anim/bounce_interpolator"
         android:id="@+id/et_search"
-        android:hint="@string/edit_hint" />
+        android:textSize="22sp"
+        android:hint="@string/edit_hint"
+        android:autofillHints="@string/edit_hint"
+        android:inputType="textAutoComplete|textImeMultiLine"
+        tools:ignore="UnusedAttribute" />
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="54dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -23,5 +30,22 @@
             android:textSize="20sp" />
 
     </ScrollView>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_error_message"
+        android:text="@string/error_message"
+        android:textSize="22sp"
+        android:padding="16dp"
+        android:layout_marginTop="54dp"
+        android:visibility="invisible" />
+
+    <ProgressBar
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/pb_search_progress"
+        android:layout_gravity="center"
+        android:visibility="invisible" />
 
 </FrameLayout>
