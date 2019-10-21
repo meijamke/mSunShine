@@ -13,12 +13,13 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.msunshine.utilities.ExplictIntentToActivityUtils;
 import com.example.msunshine.utilities.NetworkUtils;
 import com.example.msunshine.utilities.ParseJSONUtils;
 
 import java.net.URL;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ForecastAdapter.OnClickListItemListener {
 
     private RecyclerView mRecyclerView;
     private ForecastAdapter mForecastAdapter;
@@ -33,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mRecyclerView = findViewById(R.id.rv_forecast);
-        mForecastAdapter = new ForecastAdapter();
+        mForecastAdapter = new ForecastAdapter(this);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
 
         mRecyclerView.setAdapter(mForecastAdapter);
@@ -43,6 +44,11 @@ public class MainActivity extends AppCompatActivity {
         mSearchCity = findViewById(R.id.et_search);
         mErrorMsgDisplay = findViewById(R.id.tv_error_message);
         mSearchProgressBar = findViewById(R.id.pb_search_progress);
+    }
+
+    @Override
+    public void onClickItem(int position) {
+        ExplictIntentToActivityUtils.toWeatherDetail(this);
     }
 
     @Override
