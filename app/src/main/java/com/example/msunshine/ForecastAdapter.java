@@ -15,6 +15,7 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
 
     }
 
+
     class ForecastAdapterViewHolder extends RecyclerView.ViewHolder {
         final TextView mWeatherTextView;
 

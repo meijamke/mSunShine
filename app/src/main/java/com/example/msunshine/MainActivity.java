@@ -97,8 +97,8 @@ public class MainActivity extends AppCompatActivity {
             String[] weatherData = null;
             try {
                 URL url = NetworkUtils.mBuildUrl(location);
-                String urlRespone = NetworkUtils.getResponseFromHttpUrl(url);
-                weatherData = ParseJSONUtils.getForecastWeatherStringFromJSON(urlRespone);
+                String urlResponse = NetworkUtils.getResponseFromHttpUrl(url);
+                weatherData = ParseJSONUtils.getForecastWeatherStringFromJSON(urlResponse);
             } catch (Exception e) {
                 e.printStackTrace();
             }
