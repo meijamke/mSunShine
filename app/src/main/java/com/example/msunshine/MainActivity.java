@@ -17,7 +17,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.example.msunshine.utilities.ExplicitIntentToActivityUtils;
+import com.example.msunshine.utilities.ExplicitIntentActivityUtils;
 import com.example.msunshine.utilities.NetworkUtils;
 import com.example.msunshine.utilities.ParseJSONUtils;
 
@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapter.O
 
     @Override
     public void onClickItem(String weatherData) {
-        ExplicitIntentToActivityUtils.toWeatherDetail(this, weatherData);
+        ExplicitIntentActivityUtils.toWeatherDetail(this, weatherData);
     }
 
     @Override
@@ -67,11 +67,16 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapter.O
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_search) {
-
-            mForecastAdapter.setWeatherData(null);
-            getSupportLoaderManager().restartLoader(WEATHER_QUERY_SEARCH, null, this);
-            return true;
+        switch (item.getItemId()) {
+            case R.id.action_search:
+                mForecastAdapter.setWeatherData(null);
+                getSupportLoaderManager().restartLoader(WEATHER_QUERY_SEARCH, null, this);
+                return true;
+            case R.id.action_setting:
+                ExplicitIntentActivityUtils.toSetting(this);
+                return true;
+            default:
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -129,6 +134,7 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapter.O
 
     @Override
     public void onLoadFinished(@NonNull Loader<String[]> loader, String[] weatherData) {
+
         mSearchProgressBar.setVisibility(View.INVISIBLE);
 
         if (weatherData != null) {

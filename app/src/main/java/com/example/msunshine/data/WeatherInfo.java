@@ -1,5 +1,6 @@
 package com.example.msunshine.data;
 
+
 public class WeatherInfo {
 
     public static final String[] WEEK_NAME =

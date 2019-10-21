@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.example.msunshine.data.ExplicitIntent;
+import com.example.msunshine.utilities.ExplicitIntentActivityUtils;
 
 public class WeatherDetailActivity extends AppCompatActivity {
 
@@ -37,9 +38,15 @@ public class WeatherDetailActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_share) {
-            shareWeather(weatherData);
-            return true;
+        switch (item.getItemId()) {
+            case R.id.action_share:
+                shareWeather(weatherData);
+                return true;
+            case R.id.action_setting:
+                ExplicitIntentActivityUtils.toSetting(this);
+                return true;
+            default:
+                break;
         }
         return super.onOptionsItemSelected(item);
     }

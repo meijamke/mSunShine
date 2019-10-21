@@ -145,7 +145,7 @@ public class ParseJSONUtils {
         String city = data.getString(ADDRESS);
         JSONArray forecast = data.getJSONArray(FORECAST);
 
-        String[] parsedWeatherData = new String[forecast.length() + 1];
+        String[] parsedWeatherData = new String[forecast.length()];
 
         for (int i = 0; i < forecast.length(); i++) {
             JSONObject dayForecast = forecast.getJSONObject(i);

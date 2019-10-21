@@ -1,8 +1,23 @@
 <resources>
-
-    <string name="app_name">mSunShine</string>
+    <string name="app_name">SunShine</string>
     <string name="action_search">Search</string>
     <string name="edit_hint">Please input Chinese city in Chinese</string>
     <string name="error_message">Please input Chinese city name, or check your network connection!</string>
     <string name="action_share">Share</string>
+    <string name="day_temp">Day Temperature:</string>
+    <string name="night_temp">Night Temperature:</string>
+    <string name="day_weather">Day Weather:</string>
+    <string name="night_weather">Night Weather:</string>
+    <string name="day_wind_direction">Day Wind Direction:</string>
+    <string name="night_wind_direction">Night Wind Direction:</string>
+    <string name="day_wind_power">Day Wind Power:</string>
+    <string name="night_wind_power">Night Wind Power:</string>
+    <string name="monday">Monday</string>
+    <string name="tuesday">Tuesday</string>
+    <string name="wednesday">Wednesday</string>
+    <string name="thursday">Thursday</string>
+    <string name="friday">Friday</string>
+    <string name="saturday">Saturday</string>
+    <string name="sunday">Sunday</string>
+    <string name="action_setting">Setting</string>
 </resources>
