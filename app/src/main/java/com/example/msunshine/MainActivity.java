@@ -13,7 +13,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.example.msunshine.utilities.ExplictIntentToActivityUtils;
+import com.example.msunshine.utilities.ExplicitIntentToActivityUtils;
 import com.example.msunshine.utilities.NetworkUtils;
 import com.example.msunshine.utilities.ParseJSONUtils;
 
@@ -47,8 +47,8 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapter.O
     }
 
     @Override
-    public void onClickItem(int position) {
-        ExplictIntentToActivityUtils.toWeatherDetail(this);
+    public void onClickItem(String weatherData) {
+        ExplicitIntentToActivityUtils.toWeatherDetail(this, weatherData);
     }
 
     @Override
@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapter.O
 
             String[] weatherData = null;
             try {
-                URL url = NetworkUtils.mBuildUrl(location);
+                URL url = NetworkUtils.buildWeatherUrl(location);
                 String urlResponse = NetworkUtils.getResponseFromHttpUrl(url);
                 weatherData = ParseJSONUtils.getForecastWeatherStringFromJSON(urlResponse);
             } catch (Exception e) {

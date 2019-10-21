@@ -29,7 +29,7 @@ public class NetworkUtils {
      * @param query_city：必须是中文
      * @return 返回网址URL
      */
-    public static URL mBuildUrl(String query_city) {
+    public static URL buildWeatherUrl(String query_city) {
 
         Uri uri = Uri.parse(CHINA_FORECAST_WEATHER_DATA).buildUpon()
                 .appendPath(query_city)

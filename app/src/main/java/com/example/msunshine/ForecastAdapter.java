@@ -17,7 +17,7 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
     }
 
     public interface OnClickListItemListener {
-        void onClickItem(int position);
+        void onClickItem(String weatherData);
     }
 
     class ForecastAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -31,7 +31,8 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
 
         @Override
         public void onClick(View v) {
-            mItemListener.onClickItem(getAdapterPosition());
+            String weather = mWeatherData[getAdapterPosition()];
+            mItemListener.onClickItem(weather);
         }
     }
 
