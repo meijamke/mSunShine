@@ -15,5 +15,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Test"
-        android:textSize="22sp" />
+        android:textSize="22sp"
+        android:textIsSelectable="true" />
 </android.support.constraint.ConstraintLayout>

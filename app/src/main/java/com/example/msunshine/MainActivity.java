@@ -1,8 +1,12 @@
 package com.example.msunshine;
 
 import android.annotation.SuppressLint;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,8 +23,9 @@ import com.example.msunshine.utilities.ParseJSONUtils;
 
 import java.net.URL;
 
-public class MainActivity extends AppCompatActivity implements ForecastAdapter.OnClickListItemListener {
+public class MainActivity extends AppCompatActivity implements ForecastAdapter.OnClickListItemListener, LoaderManager.LoaderCallbacks<String[]> {
 
+    private static final int WEATHER_QUERY_SEARCH = 0;
     private RecyclerView mRecyclerView;
     private ForecastAdapter mForecastAdapter;
 
@@ -44,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapter.O
         mSearchCity = findViewById(R.id.et_search);
         mErrorMsgDisplay = findViewById(R.id.tv_error_message);
         mSearchProgressBar = findViewById(R.id.pb_search_progress);
+
     }
 
     @Override
@@ -62,15 +68,10 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapter.O
         if (item.getItemId() == R.id.action_search) {
 
             mForecastAdapter.setWeatherData(null);
-            loadWeatherData();
+            getSupportLoaderManager().restartLoader(WEATHER_QUERY_SEARCH, null, this);
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    public void loadWeatherData() {
-        String location = mSearchCity.getText().toString();
-        new FetchFromUrl().execute(location);
     }
 
     public void showWeatherData() {
@@ -84,43 +85,59 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapter.O
     }
 
     @SuppressLint("StaticFieldLeak")
-    public class FetchFromUrl extends AsyncTask<String, Void, String[]> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            mSearchProgressBar.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected String[] doInBackground(String... loc) {
-
-            if (loc == null)
-                return null;
-
-            String location = loc[0];
+    @NonNull
+    @Override
+    public Loader<String[]> onCreateLoader(int i, @Nullable Bundle bundle) {
+        return new AsyncTaskLoader<String[]>(this) {
 
             String[] weatherData = null;
-            try {
-                URL url = NetworkUtils.buildWeatherUrl(location);
-                String urlResponse = NetworkUtils.getResponseFromHttpUrl(url);
-                weatherData = ParseJSONUtils.getForecastWeatherStringFromJSON(urlResponse);
-            } catch (Exception e) {
-                e.printStackTrace();
+
+            @Override
+            protected void onStartLoading() {
+                super.onStartLoading();
+                if (weatherData != null)
+                    deliverResult(weatherData);
+                else {
+                    mSearchProgressBar.setVisibility(View.VISIBLE);
+                    forceLoad();
+                }
             }
-            return weatherData;
-        }
 
-        @Override
-        protected void onPostExecute(String[] weatherData) {
+            @Override
+            public String[] loadInBackground() {
+                String location = mSearchCity.getText().toString();
 
-            mSearchProgressBar.setVisibility(View.INVISIBLE);
+                try {
+                    URL url = NetworkUtils.buildWeatherUrl(location);
+                    String urlResponse = NetworkUtils.getResponseFromHttpUrl(url);
+                    weatherData = ParseJSONUtils.getForecastWeatherStringFromJSON(urlResponse);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return weatherData;
+            }
 
-            if (weatherData != null) {
-                showWeatherData();
-                mForecastAdapter.setWeatherData(weatherData);
-            } else
-                showErrorMessage();
-        }
+            @Override
+            public void deliverResult(@Nullable String[] data) {
+                weatherData = data;
+                super.deliverResult(data);
+            }
+        };
+    }
+
+    @Override
+    public void onLoadFinished(@NonNull Loader<String[]> loader, String[] weatherData) {
+        mSearchProgressBar.setVisibility(View.INVISIBLE);
+
+        if (weatherData != null) {
+            showWeatherData();
+            mForecastAdapter.setWeatherData(weatherData);
+        } else
+            showErrorMessage();
+    }
+
+    @Override
+    public void onLoaderReset(@NonNull Loader<String[]> loader) {
+
     }
 }

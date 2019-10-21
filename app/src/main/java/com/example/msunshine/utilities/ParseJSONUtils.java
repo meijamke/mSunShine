@@ -2,6 +2,8 @@ package com.example.msunshine.utilities;
 
 import android.content.Context;
 
+import com.example.msunshine.data.WeatherInfo;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -103,8 +105,6 @@ public class ParseJSONUtils {
      * }
      */
 
-    private static final String[] WEEK_NAME =
-            {"周一", "周二", "周三", "周四", "周五", "周六", "周日"};
 
     public static String[] getForecastWeatherStringFromJSON(String forecastJsonStr) throws JSONException {
 
@@ -146,10 +146,9 @@ public class ParseJSONUtils {
         JSONArray forecast = data.getJSONArray(FORECAST);
 
         String[] parsedWeatherData = new String[forecast.length() + 1];
-        parsedWeatherData[0] = city + "\n";
 
-        for (int i = 1; i <= forecast.length(); i++) {
-            JSONObject dayForecast = forecast.getJSONObject(i - 1);
+        for (int i = 0; i < forecast.length(); i++) {
+            JSONObject dayForecast = forecast.getJSONObject(i);
 
             String date = dayForecast.getString(DATE);
             String dayOfWeek = dayForecast.getString(DAY_OF_WEEK);
@@ -164,7 +163,7 @@ public class ParseJSONUtils {
 
             parsedWeatherData[i] =
                     date + "\n" +
-                            WEEK_NAME[Integer.valueOf(dayOfWeek) - 1] + "\n" +
+                            WeatherInfo.WEEK_NAME[Integer.valueOf(dayOfWeek) - 1] + "\n" +
                             "白天天气：" + dayWeather + "\n" +
                             "晚上天气：" + nightWeather + "\n" +
                             "白天温度：" + dayTemp + "\n" +

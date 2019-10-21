@@ -7,21 +7,25 @@ import android.support.v4.app.ShareCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.example.msunshine.data.ExplicitIntent;
 
 public class WeatherDetailActivity extends AppCompatActivity {
 
     private String weatherData;
+    private TextView mWeatherDetailTextView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather_detail);
 
+        mWeatherDetailTextView = findViewById(R.id.detail_text_view);
         Intent intent = getIntent();
         if (intent.hasExtra(ExplicitIntent.STRING_WEATHER_DATA)) {
             weatherData = intent.getStringExtra(ExplicitIntent.STRING_WEATHER_DATA);
+            mWeatherDetailTextView.setText(weatherData);
         }
     }
 
@@ -46,5 +50,17 @@ public class WeatherDetailActivity extends AppCompatActivity {
                 .setType("text/*")
                 .setText(weatherData)
                 .startChooser();
+    }
+
+    /**
+     * 在onCreateOptionsMenu()方法中，通过menu。finditem(int id)获取MenuItem
+     * MenuItem直接调用setIntent，传入建好的Intent
+     **/
+    private Intent shareText() {
+        ShareCompat.IntentBuilder intentBuilder = ShareCompat.IntentBuilder.from(this)
+                .setChooserTitle("choose which app to share")
+                .setType("text/*")
+                .setText(weatherData);
+        return intentBuilder.getIntent();
     }
 }
