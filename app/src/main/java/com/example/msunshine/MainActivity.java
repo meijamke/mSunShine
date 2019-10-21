@@ -26,6 +26,7 @@ import java.net.URL;
 public class MainActivity extends AppCompatActivity implements ForecastAdapter.OnClickListItemListener, LoaderManager.LoaderCallbacks<String[]> {
 
     private static final int WEATHER_QUERY_SEARCH = 0;
+
     private RecyclerView mRecyclerView;
     private ForecastAdapter mForecastAdapter;
 
@@ -50,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapter.O
         mErrorMsgDisplay = findViewById(R.id.tv_error_message);
         mSearchProgressBar = findViewById(R.id.pb_search_progress);
 
+        getSupportLoaderManager().initLoader(WEATHER_QUERY_SEARCH, null, this);
     }
 
     @Override
