@@ -1,6 +1,7 @@
 package com.example.msunshine;
 
 import android.annotation.SuppressLint;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -8,6 +9,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
@@ -23,9 +25,12 @@ import com.example.msunshine.utilities.ParseJSONUtils;
 
 import java.net.URL;
 
-public class MainActivity extends AppCompatActivity implements ForecastAdapter.OnClickListItemListener, LoaderManager.LoaderCallbacks<String[]> {
+public class MainActivity extends AppCompatActivity implements
+        ForecastAdapter.OnClickListItemListener,
+        LoaderManager.LoaderCallbacks<String[]>,
+        SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private static final int WEATHER_QUERY_SEARCH = 0;
+    private static final int ID_WEATHER_LOADER = 0;
 
     private RecyclerView mRecyclerView;
     private ForecastAdapter mForecastAdapter;
@@ -33,6 +38,8 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapter.O
     private EditText mSearchCity;
     private TextView mErrorMsgDisplay;
     private ProgressBar mSearchProgressBar;
+
+    private static boolean pref_flag = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +58,33 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapter.O
         mErrorMsgDisplay = findViewById(R.id.tv_error_message);
         mSearchProgressBar = findViewById(R.id.pb_search_progress);
 
-        getSupportLoaderManager().initLoader(WEATHER_QUERY_SEARCH, null, this);
+        getSupportLoaderManager().initLoader(ID_WEATHER_LOADER, null, this);
+
+        PreferenceManager.getDefaultSharedPreferences(this)
+                .registerOnSharedPreferenceChangeListener(this);
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (pref_flag) {
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+            String city = sharedPreferences.getString(
+                    getString(R.string.pref_city_key),
+                    getString(R.string.pref_city_default));
+            mSearchCity.setText(city);
+            getSupportLoaderManager().restartLoader(ID_WEATHER_LOADER, null, this);
+            pref_flag = false;
+
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        PreferenceManager.getDefaultSharedPreferences(this)
+                .unregisterOnSharedPreferenceChangeListener(this);
     }
 
     @Override
@@ -70,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapter.O
         switch (item.getItemId()) {
             case R.id.action_search:
                 mForecastAdapter.setWeatherData(null);
-                getSupportLoaderManager().restartLoader(WEATHER_QUERY_SEARCH, null, this);
+                getSupportLoaderManager().restartLoader(ID_WEATHER_LOADER, null, this);
                 return true;
             case R.id.action_setting:
                 ExplicitIntentActivityUtils.toSetting(this);
@@ -94,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapter.O
     @SuppressLint("StaticFieldLeak")
     @NonNull
     @Override
-    public Loader<String[]> onCreateLoader(int i, @Nullable Bundle bundle) {
+    public Loader<String[]> onCreateLoader(int id, @Nullable Bundle bundle) {
         return new AsyncTaskLoader<String[]>(this) {
 
             String[] weatherData = null;
@@ -136,10 +169,10 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapter.O
     public void onLoadFinished(@NonNull Loader<String[]> loader, String[] weatherData) {
 
         mSearchProgressBar.setVisibility(View.INVISIBLE);
+        mForecastAdapter.setWeatherData(weatherData);
 
         if (weatherData != null) {
             showWeatherData();
-            mForecastAdapter.setWeatherData(weatherData);
         } else
             showErrorMessage();
     }
@@ -147,5 +180,10 @@ public class MainActivity extends AppCompatActivity implements ForecastAdapter.O
     @Override
     public void onLoaderReset(@NonNull Loader<String[]> loader) {
 
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        pref_flag = true;
     }
 }

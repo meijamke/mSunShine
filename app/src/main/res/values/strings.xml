@@ -20,4 +20,15 @@
     <string name="saturday">Saturday</string>
     <string name="sunday">Sunday</string>
     <string name="action_setting">Setting</string>
+    <string name="pref_city_key" translatable="false">City Key</string>
+    <string name="pref_city_default" translatable="false">广州</string>
+    <string name="pref_city_label">City</string>
+    <string name="pref_temp_units_label">Temperature Units</string>
+    <string name="pref_temp_units_default" translatable="false">Centigrade</string>
+    <string name="pref_temp_units_key" translatable="false">Temperature Units Key</string>
+
+    <string name="pref_temp_centigrade" translatable="false">Centigrade</string>
+    <string name="pref_temp_fahrenheit" translatable="false">Fahrenheit</string>
+    <string name="pref_temp_label_centigrade">Centigrade</string>
+    <string name="pref_temp_label_fahrenheit">Fahrenheit</string>
 </resources>

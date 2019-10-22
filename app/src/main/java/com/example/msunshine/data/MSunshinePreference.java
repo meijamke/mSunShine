@@ -1,14 +1,24 @@
 package com.example.msunshine.data;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.support.v7.preference.PreferenceManager;
+
+import com.example.msunshine.R;
+
 public class MSunshinePreference {
 
-    private static String CHINA_DEFAULT_LOCATION = "广州";
-//    udacity学习使用
-//    private static String DEFAULT_LOCATION = "94043,USA";
+    public static String getPreferedWeatherCity(Context context) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return sharedPreferences.getString(
+                context.getString(R.string.pref_city_key),
+                context.getString(R.string.pref_city_default));
+    }
 
-    public static String getDefaultPreference() {
-        return CHINA_DEFAULT_LOCATION;
-//        udacity学习使用
-//        return DEFAULT_LOCATION;
+    public static String getPredferedTempUnits(Context context) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return sharedPreferences.getString(
+                context.getString(R.string.pref_temp_units_key),
+                context.getString(R.string.pref_temp_units_default));
     }
 }
