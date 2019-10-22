@@ -64,6 +64,8 @@ public class SettingFragment extends PreferenceFragmentCompat implements
      * preference value每一次改变都会写入sharedPreference文件中
      * 每一次数值写入sharedPreference文件 前 都会调用onPreferenceChange，
      * 所以为了在数值写入文件前检查EditPreference的value是否为汉字，需要重写该方法
+     *
+     * but the code seems doesn't work
      * */
     @Override
     public boolean onPreferenceChange(Preference preference, Object newValues) {
