@@ -9,7 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-import com.example.msunshine.data.ExplicitIntent;
+import com.example.msunshine.data.ExplicitIntentData;
 import com.example.msunshine.utilities.ExplicitIntentActivityUtils;
 
 public class WeatherDetailActivity extends AppCompatActivity {
@@ -24,8 +24,8 @@ public class WeatherDetailActivity extends AppCompatActivity {
 
         mWeatherDetailTextView = findViewById(R.id.detail_text_view);
         Intent intent = getIntent();
-        if (intent.hasExtra(ExplicitIntent.STRING_WEATHER_DATA)) {
-            weatherData = intent.getStringExtra(ExplicitIntent.STRING_WEATHER_DATA);
+        if (intent.hasExtra(ExplicitIntentData.STRING_WEATHER_DATA)) {
+            weatherData = intent.getStringExtra(ExplicitIntentData.STRING_WEATHER_DATA);
             mWeatherDetailTextView.setText(weatherData);
         }
     }
