@@ -6,7 +6,8 @@
         android:title="@string/pref_city_label"
         android:inputType="text"
         android:singleLine="true"
-        android:hint="@string/edit_hint" />
+        android:hint="@string/edit_hint"
+        android:textSize="20sp" />
 
     <ListPreference
         android:key="@string/pref_temp_units_key"

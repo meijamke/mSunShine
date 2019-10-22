@@ -58,10 +58,17 @@ public class MainActivity extends AppCompatActivity implements
         mErrorMsgDisplay = findViewById(R.id.tv_error_message);
         mSearchProgressBar = findViewById(R.id.pb_search_progress);
 
-        getSupportLoaderManager().initLoader(ID_WEATHER_LOADER, null, this);
-
         PreferenceManager.getDefaultSharedPreferences(this)
                 .registerOnSharedPreferenceChangeListener(this);
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String city = sharedPreferences.getString(
+                getString(R.string.pref_city_key),
+                getString(R.string.pref_city_default));
+        mSearchCity.setText(city);
+        mSearchCity.setSelection(city.length());
+
+        getSupportLoaderManager().initLoader(ID_WEATHER_LOADER, null, this);
 
     }
 
@@ -74,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements
                     getString(R.string.pref_city_key),
                     getString(R.string.pref_city_default));
             mSearchCity.setText(city);
+            mSearchCity.setSelection(city.length());
             getSupportLoaderManager().restartLoader(ID_WEATHER_LOADER, null, this);
             pref_flag = false;
 

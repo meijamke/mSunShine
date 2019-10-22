@@ -6,6 +6,8 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
+import com.example.msunshine.utilities.ExplicitIntentActivityUtils;
+
 public class SettingActivity extends AppCompatActivity {
 
     @Override
@@ -18,10 +20,13 @@ public class SettingActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
     }
 
+    /***
+     * The code seems doesn't work
+     * */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.home) {
-            onBackPressed();
+            ExplicitIntentActivityUtils.toMain(this);
             return true;
         }
         return super.onOptionsItemSelected(item);
