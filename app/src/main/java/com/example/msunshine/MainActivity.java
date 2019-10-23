@@ -158,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements
                 try {
                     URL url = NetworkUtils.buildWeatherUrl(location);
                     String urlResponse = NetworkUtils.getResponseFromHttpUrl(url);
-                    weatherData = ParseJSONUtils.getForecastWeatherStringFromJSON(urlResponse);
+                    weatherData = ParseJSONUtils.getForecastWeatherStringFromJSON(getContext(), urlResponse, ParseJSONUtils.TYPE_WEATHER_SUMAARY);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

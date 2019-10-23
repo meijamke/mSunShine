@@ -10,6 +10,9 @@ import org.json.JSONObject;
 
 public class ParseJSONUtils {
 
+    public static final int TYPE_WEATHER_SUMAARY = 0;
+    public static final int TYPE_WEATHER_DETAIL = 1;
+
     /**
      * 返回数据的参考格式
      * {
@@ -106,7 +109,7 @@ public class ParseJSONUtils {
      */
 
 
-    public static String[] getForecastWeatherStringFromJSON(String forecastJsonStr) throws JSONException {
+    public static String[] getForecastWeatherStringFromJSON(Context context, String forecastJsonStr, int dataType) throws JSONException {
 
         //数据成功返回时code=1，失败时coed=0
         final String RESULT_CODE = "code";
@@ -161,17 +164,26 @@ public class ParseJSONUtils {
             String dayWindPower = dayForecast.getString(DAY_WIND_POWER);
             String nightWindPower = dayForecast.getString(NIGHT_WIND_POWER);
 
-            parsedWeatherData[i] =
-                    date + "\n" +
-                            WeatherInfo.WEEK_NAME[Integer.valueOf(dayOfWeek) - 1] + "\n" +
-                            "白天天气：" + dayWeather + "\n" +
-                            "晚上天气：" + nightWeather + "\n" +
-                            "白天温度：" + dayTemp + "\n" +
-                            "晚上温度：" + nightTemp + "\n" +
-                            "白天风向：" + dayWindDirection + "\n" +
-                            "晚上风向：" + nightWindDirection + "\n" +
-                            "白天风力：" + dayWindPower + "\n" +
-                            "晚上风力：" + nightWindPower + "\n\n";
+            if (dataType == TYPE_WEATHER_SUMAARY)
+                parsedWeatherData[i] =
+                        date + "\n" +
+                                WeatherInfo.getWeekName(context, dayOfWeek) + "\n" +
+                                "白天天气：" + dayWeather + "\n" +
+                                "晚上天气：" + nightWeather + "\n" +
+                                "白天温度：" + dayTemp + "\n" +
+                                "晚上温度：" + nightTemp;
+            if (dataType == TYPE_WEATHER_DETAIL)
+                parsedWeatherData[i] =
+                        date + "\n" +
+                                WeatherInfo.getWeekName(context, dayOfWeek) + "\n" +
+                                "白天天气：" + dayWeather + "\n" +
+                                "晚上天气：" + nightWeather + "\n" +
+                                "白天温度：" + dayTemp + "\n" +
+                                "晚上温度：" + nightTemp + "\n" +
+                                "白天风向：" + dayWindDirection + "\n" +
+                                "晚上风向：" + nightWindDirection + "\n" +
+                                "白天风力：" + dayWindPower + "\n" +
+                                "晚上风力：" + nightWindPower;
         }
         return parsedWeatherData;
     }
