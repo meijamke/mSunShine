@@ -5,7 +5,6 @@ import android.annotation.SuppressLint;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Locale;
 import java.util.TimeZone;
 
 public class MSunshineDateUtils {
@@ -30,7 +29,7 @@ public class MSunshineDateUtils {
 
     @SuppressLint("DefaultLocale")
     public static String[] normalizedDateNow() {
-        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT+8"), Locale.getDefault());
+        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT+8"));
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH) + 1;
         int day = calendar.get(Calendar.DAY_OF_MONTH);

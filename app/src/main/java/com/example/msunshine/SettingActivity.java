@@ -6,8 +6,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
-import com.example.msunshine.utilities.ExplicitIntentActivityUtils;
-
 public class SettingActivity extends AppCompatActivity {
 
     @Override
@@ -28,7 +26,7 @@ public class SettingActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.home) {
-            ExplicitIntentActivityUtils.toMain(this);
+            onBackPressed();
             return true;
         }
         return super.onOptionsItemSelected(item);

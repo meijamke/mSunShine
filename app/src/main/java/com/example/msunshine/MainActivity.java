@@ -3,7 +3,6 @@ package com.example.msunshine;
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,9 +23,7 @@ import android.widget.TextView;
 
 import com.example.msunshine.data.MSunshinePreference;
 import com.example.msunshine.data.WeatherContract;
-import com.example.msunshine.data.WeatherDbHelper;
 import com.example.msunshine.utilities.ExplicitIntentActivityUtils;
-import com.example.msunshine.utilities.MSunshineDateUtils;
 import com.example.msunshine.utilities.NetworkUtils;
 import com.example.msunshine.utilities.ParseJSONUtils;
 
@@ -35,6 +33,8 @@ public class MainActivity extends AppCompatActivity implements
         ForecastAdapter.OnClickListItemListener,
         LoaderManager.LoaderCallbacks<String[]>,
         SharedPreferences.OnSharedPreferenceChangeListener {
+
+    private static final String TAG = "MainActivity";
 
     public static final String[] MAIN_PROJECTION = new String[]{
             WeatherContract.WeatherEntry.COLUMN_DATE,
@@ -50,7 +50,9 @@ public class MainActivity extends AppCompatActivity implements
     public static final int INDEX_WEATHER_NIGHT_CONDITION = 3;
     public static final int INDEX_WEATHER_DAY_TEMP = 4;
     public static final int INDEX_WEATHER_NIGHT_TEMP = 5;
+
     private static final int ID_WEATHER_STRING_LOADER = 0;
+
     private static boolean pref_flag = false;
     private RecyclerView mRecyclerView;
     private ForecastAdapter mForecastAdapter;
@@ -184,41 +186,50 @@ public class MainActivity extends AppCompatActivity implements
 
                 try {
                     URL url = NetworkUtils.buildWeatherUrl(location);
+                    Log.d(TAG, "loadInBackground: " + url);
                     String urlResponse = NetworkUtils.getResponseFromHttpUrl(url);
-                    weatherData = ParseJSONUtils.getForecastWeatherStringFromJSON(getContext(), urlResponse, ParseJSONUtils.TYPE_WEATHER_SUMMARY);
-                    for (String weather : weatherData) {
-                        ContentValues values = stringToContentValues(weather);
-                        new WeatherDbHelper(getContext()).getWritableDatabase().insert(
-                                WeatherContract.WeatherEntry.TABLE_NAME,
-                                null,
-                                values
-                        );
-                    }
+                    weatherData = ParseJSONUtils.getForecastWeatherStringFromJSON(urlResponse);
+                    Log.d(TAG, "loadInBackground: ");
+//                    new Thread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            for (String weather : weatherData) {
+//                                ContentValues values = stringToContentValues(weather);
+//                                new WeatherDbHelper(getContext()).getWritableDatabase().insert(
+//                                        WeatherContract.WeatherEntry.TABLE_NAME,
+//                                        null,
+//                                        values
+//                                );
+//                            }
+//                        }
+//                    }).start();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                if (weatherData == null) {
-                    Cursor cursor = new WeatherDbHelper(getContext()).getReadableDatabase().query(
-                            WeatherContract.WeatherEntry.TABLE_NAME,
-                            MAIN_PROJECTION,
-                            WeatherContract.WeatherEntry.COLUMN_DATE + ">=?",
-                            MSunshineDateUtils.normalizedDateNow(),
-                            null,
-                            null,
-                            WeatherContract.WeatherEntry.COLUMN_DATE + "ASC"
-                    );
-                    if (cursor != null && cursor.moveToFirst())
-                        for (int i = 0; i < cursor.getCount(); i++)
-                            weatherData[i] =
-                                    cursor.getString(MainActivity.INDEX_WEATHER_DATE) +
-                                            cursor.getString(MainActivity.INDEX_WEATHER_WEEK) +
-                                            cursor.getString(MainActivity.INDEX_WEATHER_DAY_CONDITION) +
-                                            cursor.getString(MainActivity.INDEX_WEATHER_NIGHT_CONDITION) +
-                                            cursor.getString(MainActivity.INDEX_WEATHER_DAY_TEMP) +
-                                            cursor.getString(MainActivity.INDEX_WEATHER_NIGHT_TEMP);
-                    assert cursor != null;
-                    cursor.close();
-                }
+//                if (weatherData == null) {
+//                    Cursor cursor = new WeatherDbHelper(getContext()).getReadableDatabase().query(
+//                            WeatherContract.WeatherEntry.TABLE_NAME,
+//                            MAIN_PROJECTION,
+//                            WeatherContract.WeatherEntry.COLUMN_DATE + ">=?",
+//                            MSunshineDateUtils.normalizedDateNow(),
+//                            null,
+//                            null,
+//                            WeatherContract.WeatherEntry.COLUMN_DATE + "ASC"
+//                    );
+//                    if (cursor != null && cursor.moveToFirst()) {
+//                        mForecastAdapter.swapCursor(cursor);
+//                        for (int i = 0; i < cursor.getCount(); i++)
+//                            weatherData[i] =
+//                                    cursor.getString(MainActivity.INDEX_WEATHER_DATE) +
+//                                    cursor.getString(MainActivity.INDEX_WEATHER_WEEK) +
+//                                    cursor.getString(MainActivity.INDEX_WEATHER_DAY_CONDITION) +
+//                                    cursor.getString(MainActivity.INDEX_WEATHER_NIGHT_CONDITION) +
+//                                    cursor.getString(MainActivity.INDEX_WEATHER_DAY_TEMP) +
+//                                    cursor.getString(MainActivity.INDEX_WEATHER_NIGHT_TEMP);
+//                    }
+//                        assert cursor != null;
+//                    cursor.close();
+//                }
                 return weatherData;
             }
 
