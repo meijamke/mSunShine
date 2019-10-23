@@ -35,6 +35,11 @@
             android:authorities="com.example.msunshine.data"
             android:name=".data.WeatherProvider"
             android:exported="false" />
+
+        <service
+            android:name=".sync.MSunshineSyncIntentService"
+            android:exported="false" />
+
     </application>
 
 </manifest>

@@ -19,6 +19,8 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.msunshine.data.MSunshinePreference;
+import com.example.msunshine.sync.MSunshineSyncUtils;
 import com.example.msunshine.utilities.ExplicitIntentActivityUtils;
 import com.example.msunshine.utilities.NetworkUtils;
 import com.example.msunshine.utilities.ParseJSONUtils;
@@ -61,14 +63,11 @@ public class MainActivity extends AppCompatActivity implements
         PreferenceManager.getDefaultSharedPreferences(this)
                 .registerOnSharedPreferenceChangeListener(this);
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String city = sharedPreferences.getString(
-                getString(R.string.pref_city_key),
-                getString(R.string.pref_city_default));
+        String city = MSunshinePreference.getPreferedWeatherCity(this);
         mSearchCity.setText(city);
         mSearchCity.setSelection(city.length());
 
-        getSupportLoaderManager().initLoader(ID_WEATHER_LOADER, null, this);
+        MSunshineSyncUtils.startImmediateSync(this, mSearchCity.getText().toString());
 
     }
 
@@ -76,13 +75,11 @@ public class MainActivity extends AppCompatActivity implements
     protected void onStart() {
         super.onStart();
         if (pref_flag) {
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-            String city = sharedPreferences.getString(
-                    getString(R.string.pref_city_key),
-                    getString(R.string.pref_city_default));
+
+            String city = MSunshinePreference.getPreferedWeatherCity(this);
             mSearchCity.setText(city);
             mSearchCity.setSelection(city.length());
-            getSupportLoaderManager().restartLoader(ID_WEATHER_LOADER, null, this);
+            MSunshineSyncUtils.startImmediateSync(this, mSearchCity.getText().toString());
             pref_flag = false;
 
         }
@@ -111,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements
         switch (item.getItemId()) {
             case R.id.action_search:
                 mForecastAdapter.setWeatherData(null);
-                getSupportLoaderManager().restartLoader(ID_WEATHER_LOADER, null, this);
+                MSunshineSyncUtils.startImmediateSync(this, mSearchCity.getText().toString());
                 return true;
             case R.id.action_setting:
                 ExplicitIntentActivityUtils.toSetting(this);
@@ -158,7 +155,7 @@ public class MainActivity extends AppCompatActivity implements
                 try {
                     URL url = NetworkUtils.buildWeatherUrl(location);
                     String urlResponse = NetworkUtils.getResponseFromHttpUrl(url);
-                    weatherData = ParseJSONUtils.getForecastWeatherStringFromJSON(getContext(), urlResponse, ParseJSONUtils.TYPE_WEATHER_SUMAARY);
+                    weatherData = ParseJSONUtils.getForecastWeatherStringFromJSON(getContext(), urlResponse, ParseJSONUtils.TYPE_WEATHER_SUMMARY);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

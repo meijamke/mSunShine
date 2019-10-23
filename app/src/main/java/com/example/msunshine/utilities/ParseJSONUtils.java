@@ -2,7 +2,7 @@ package com.example.msunshine.utilities;
 
 import android.content.Context;
 
-import com.example.msunshine.data.WeatherInfo;
+import com.example.msunshine.data.WeatherData;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -10,7 +10,7 @@ import org.json.JSONObject;
 
 public class ParseJSONUtils {
 
-    public static final int TYPE_WEATHER_SUMAARY = 0;
+    public static final int TYPE_WEATHER_SUMMARY = 0;
     public static final int TYPE_WEATHER_DETAIL = 1;
 
     /**
@@ -93,8 +93,8 @@ public class ParseJSONUtils {
      * {
      * "date": "2019-09-09",
      * "dayOfWeek": "1",
-     * "dayWeather": "小雨",
-     * "nightWeather": "小雨",
+     * "dayCondition": "小雨",
+     * "nightCondition": "小雨",
      * "dayTemp": "32℃",
      * "nightTemp": "21℃",
      * "dayWindDirection": "东北",
@@ -125,8 +125,8 @@ public class ParseJSONUtils {
 
         final String DATE = "date";
         final String DAY_OF_WEEK = "dayOfWeek";
-        final String DAY_WEATHER = "dayWeather";
-        final String NIGHT_WEATHER = "nightWeather";
+        final String DAY_WEATHER = "dayCondition";
+        final String NIGHT_WEATHER = "nightCondition";
         final String DAY_TEMP = "dayTemp";
         final String NIGHT_TEMP = "nightTemp";
         final String DAY_WIND_DIRECTION = "dayWindDirection";
@@ -155,8 +155,8 @@ public class ParseJSONUtils {
 
             String date = dayForecast.getString(DATE);
             String dayOfWeek = dayForecast.getString(DAY_OF_WEEK);
-            String dayWeather = dayForecast.getString(DAY_WEATHER);
-            String nightWeather = dayForecast.getString(NIGHT_WEATHER);
+            String dayCondition = dayForecast.getString(DAY_WEATHER);
+            String nightCondition = dayForecast.getString(NIGHT_WEATHER);
             String dayTemp = dayForecast.getString(DAY_TEMP);
             String nightTemp = dayForecast.getString(NIGHT_TEMP);
             String dayWindDirection = dayForecast.getString(DAY_WIND_DIRECTION);
@@ -164,20 +164,20 @@ public class ParseJSONUtils {
             String dayWindPower = dayForecast.getString(DAY_WIND_POWER);
             String nightWindPower = dayForecast.getString(NIGHT_WIND_POWER);
 
-            if (dataType == TYPE_WEATHER_SUMAARY)
+            if (dataType == TYPE_WEATHER_SUMMARY)
                 parsedWeatherData[i] =
                         date + "\n" +
-                                WeatherInfo.getWeekName(context, dayOfWeek) + "\n" +
-                                "白天天气：" + dayWeather + "\n" +
-                                "晚上天气：" + nightWeather + "\n" +
+                                WeatherData.getWeekName(context, dayOfWeek) + "\n" +
+                                "白天天气：" + dayCondition + "\n" +
+                                "晚上天气：" + nightCondition + "\n" +
                                 "白天温度：" + dayTemp + "\n" +
                                 "晚上温度：" + nightTemp;
-            if (dataType == TYPE_WEATHER_DETAIL)
+            else if (dataType == TYPE_WEATHER_DETAIL)
                 parsedWeatherData[i] =
                         date + "\n" +
-                                WeatherInfo.getWeekName(context, dayOfWeek) + "\n" +
-                                "白天天气：" + dayWeather + "\n" +
-                                "晚上天气：" + nightWeather + "\n" +
+                                WeatherData.getWeekName(context, dayOfWeek) + "\n" +
+                                "白天天气：" + dayCondition + "\n" +
+                                "晚上天气：" + nightCondition + "\n" +
                                 "白天温度：" + dayTemp + "\n" +
                                 "晚上温度：" + nightTemp + "\n" +
                                 "白天风向：" + dayWindDirection + "\n" +

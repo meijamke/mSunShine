@@ -12,8 +12,9 @@ public class WeatherDbHelper extends SQLiteOpenHelper {
     private static final String CREATE_TABLE = "create table " +
             WeatherContract.WeatherEntry.TABLE_NAME + "(" +
             WeatherContract.WeatherEntry.COLUMN_DATE + " text not null," +
-            WeatherContract.WeatherEntry.COLUMN_DAY_WEATHER + "text not null," +
-            WeatherContract.WeatherEntry.COLUMN_NIGHT_WEATHER + "text not null," +
+            WeatherContract.WeatherEntry.COLUMN_WEEK + " text not null," +
+            WeatherContract.WeatherEntry.COLUMN_DAY_CONDITION + "text not null," +
+            WeatherContract.WeatherEntry.COLUMN_NIGHT_CONDITION + "text not null," +
             WeatherContract.WeatherEntry.COLUMN_DAY_TEMP + "text not null," +
             WeatherContract.WeatherEntry.COLUMN_NIGHT_TEMP + "text not null," +
             WeatherContract.WeatherEntry.COLUMN_DAY_WIND_DIRECTION + "text not null," +
