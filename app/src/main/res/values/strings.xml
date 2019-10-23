@@ -2,7 +2,7 @@
     <string name="app_name">SunShine</string>
     <string name="action_search">Search</string>
     <string name="edit_hint">Please input Chinese city in Chinese</string>
-    <string name="error_message">Please input Chinese city name, or check your network connection!</string>
+    <string name="error_message">Please input Chinese city name, or check your network connection! We try to fetch history data</string>
     <string name="action_share">Share</string>
     <string name="day_temp">Day Temperature:</string>
     <string name="night_temp">Night Temperature:</string>

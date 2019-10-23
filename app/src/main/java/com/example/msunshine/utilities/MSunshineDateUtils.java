@@ -1,9 +1,12 @@
 package com.example.msunshine.utilities;
 
-import java.text.DateFormat;
+import android.annotation.SuppressLint;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.Calendar;
+import java.util.Locale;
+import java.util.TimeZone;
 
 public class MSunshineDateUtils {
 
@@ -25,10 +28,12 @@ public class MSunshineDateUtils {
         return convertSuccess;
     }
 
-    public boolean isDateExpired(String input, Date expiration) throws ParseException {
-        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        Date date = dateFormat.parse(input);
-
-        return date.after(expiration);
+    @SuppressLint("DefaultLocale")
+    public static String[] normalizedDateNow() {
+        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT+8"), Locale.getDefault());
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH) + 1;
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        return new String[]{String.format("%d-%d-%d", year, month, day)};
     }
 }

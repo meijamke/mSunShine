@@ -10,6 +10,9 @@ import org.json.JSONObject;
 
 public class ParseJSONUtils {
 
+    public static final int TYPE_WEATHER_SUMMARY = 0;
+    public static final int TYPE_WEATHER_DETAIL = 1;
+
     /**
      * 返回数据的参考格式
      * {
@@ -44,15 +47,15 @@ public class ParseJSONUtils {
 //        final String HUMIDITY = "humidity";
 //        final String DATE = "reportTime";
 //
-//        String parsedWeatherData;
+//        String parsedWeatherDetail;
 //        JSONObject jsonObject = new JSONObject(forecastJsonStr);
 //
 //        //判断是否拿到了数据
 //        if (jsonObject.has(RESULT_CODE)) {
 //            int code = jsonObject.getInt(RESULT_CODE);
 //            if (code == 0) {
-//                parsedWeatherData = jsonObject.getString(RESULT_MESSAGE) + "\n";
-//                return parsedWeatherData;
+//                parsedWeatherDetail = jsonObject.getString(RESULT_MESSAGE) + "\n";
+//                return parsedWeatherDetail;
 //            }
 //        }
 //
@@ -66,7 +69,7 @@ public class ParseJSONUtils {
 //        String humidity = data.getString(HUMIDITY);
 //        String date = data.getString(DATE).split(" ")[0];
 //
-//        parsedWeatherData =
+//        parsedWeatherDetail =
 //                city + "\n" +
 //                temp + "\n" +
 //                weather + "\n" +
@@ -74,7 +77,7 @@ public class ParseJSONUtils {
 //                windPower + "\n" +
 //                humidity + "\n" +
 //                date;
-//        return parsedWeatherData;
+//        return parsedWeatherDetail;
 //    }
 
     /**
@@ -90,8 +93,8 @@ public class ParseJSONUtils {
      * {
      * "date": "2019-09-09",
      * "dayOfWeek": "1",
-     * "dayWeather": "小雨",
-     * "nightWeather": "小雨",
+     * "dayCondition": "小雨",
+     * "nightCondition": "小雨",
      * "dayTemp": "32℃",
      * "nightTemp": "21℃",
      * "dayWindDirection": "东北",
@@ -106,7 +109,7 @@ public class ParseJSONUtils {
      */
 
 
-    public static String[] getForecastWeatherStringFromJSON(String forecastJsonStr) throws JSONException {
+    public static String[] getForecastWeatherStringFromJSON(Context context, String forecastJsonStr, int dataType) throws JSONException {
 
         //数据成功返回时code=1，失败时coed=0
         final String RESULT_CODE = "code";
@@ -117,13 +120,13 @@ public class ParseJSONUtils {
         //返回的数据
         final String RESULT_DATA = "data";
 
-        final String ADDRESS = "address";
+//        final String ADDRESS = "address";
         final String FORECAST = "forecasts";
 
         final String DATE = "date";
         final String DAY_OF_WEEK = "dayOfWeek";
-        final String DAY_WEATHER = "dayWeather";
-        final String NIGHT_WEATHER = "nightWeather";
+        final String DAY_WEATHER = "dayCondition";
+        final String NIGHT_WEATHER = "nightCondition";
         final String DAY_TEMP = "dayTemp";
         final String NIGHT_TEMP = "nightTemp";
         final String DAY_WIND_DIRECTION = "dayWindDirection";
@@ -142,7 +145,7 @@ public class ParseJSONUtils {
 
         JSONObject data = forecastJson.getJSONObject(RESULT_DATA);
 
-        String city = data.getString(ADDRESS);
+//        String city = data.getString(ADDRESS);
         JSONArray forecast = data.getJSONArray(FORECAST);
 
         String[] parsedWeatherData = new String[forecast.length()];
@@ -152,8 +155,8 @@ public class ParseJSONUtils {
 
             String date = dayForecast.getString(DATE);
             String dayOfWeek = dayForecast.getString(DAY_OF_WEEK);
-            String dayWeather = dayForecast.getString(DAY_WEATHER);
-            String nightWeather = dayForecast.getString(NIGHT_WEATHER);
+            String dayCondition = dayForecast.getString(DAY_WEATHER);
+            String nightCondition = dayForecast.getString(NIGHT_WEATHER);
             String dayTemp = dayForecast.getString(DAY_TEMP);
             String nightTemp = dayForecast.getString(NIGHT_TEMP);
             String dayWindDirection = dayForecast.getString(DAY_WIND_DIRECTION);
@@ -161,24 +164,28 @@ public class ParseJSONUtils {
             String dayWindPower = dayForecast.getString(DAY_WIND_POWER);
             String nightWindPower = dayForecast.getString(NIGHT_WIND_POWER);
 
-            parsedWeatherData[i] =
-                    date + "\n" +
-                            WeatherInfo.WEEK_NAME[Integer.valueOf(dayOfWeek) - 1] + "\n" +
-                            "白天天气：" + dayWeather + "\n" +
-                            "晚上天气：" + nightWeather + "\n" +
-                            "白天温度：" + dayTemp + "\n" +
-                            "晚上温度：" + nightTemp + "\n" +
-                            "白天风向：" + dayWindDirection + "\n" +
-                            "晚上风向：" + nightWindDirection + "\n" +
-                            "白天风力：" + dayWindPower + "\n" +
-                            "晚上风力：" + nightWindPower + "\n\n";
+            if (dataType == TYPE_WEATHER_SUMMARY)
+                parsedWeatherData[i] =
+                        date + "\n" +
+                                WeatherInfo.getWeekName(context, dayOfWeek) + "\n" +
+                                "白天天气：" + dayCondition + "\n" +
+                                "晚上天气：" + nightCondition + "\n" +
+                                "白天温度：" + dayTemp + "\n" +
+                                "晚上温度：" + nightTemp + "\n\n";
+            else if (dataType == TYPE_WEATHER_DETAIL)
+                parsedWeatherData[i] =
+                        date + "\n" +
+                                WeatherInfo.getWeekName(context, dayOfWeek) + "\n" +
+                                "白天天气：" + dayCondition + "\n" +
+                                "晚上天气：" + nightCondition + "\n" +
+                                "白天温度：" + dayTemp + "\n" +
+                                "晚上温度：" + nightTemp + "\n" +
+                                "白天风向：" + dayWindDirection + "\n" +
+                                "晚上风向：" + nightWindDirection + "\n" +
+                                "白天风力：" + dayWindPower + "\n" +
+                                "晚上风力：" + nightWindPower + "\n\n";
         }
         return parsedWeatherData;
     }
 
-    public static Context[] getFullWeatherDataFromJSON(String forecastJsonStr) {
-        /*有必要的话，以后再实现
-         */
-        return null;
-    }
 }

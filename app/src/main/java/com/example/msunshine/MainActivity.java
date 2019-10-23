@@ -1,7 +1,9 @@
 package com.example.msunshine;
 
 import android.annotation.SuppressLint;
+import android.content.ContentValues;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -19,7 +21,11 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.msunshine.data.MSunshinePreference;
+import com.example.msunshine.data.WeatherContract;
+import com.example.msunshine.data.WeatherDbHelper;
 import com.example.msunshine.utilities.ExplicitIntentActivityUtils;
+import com.example.msunshine.utilities.MSunshineDateUtils;
 import com.example.msunshine.utilities.NetworkUtils;
 import com.example.msunshine.utilities.ParseJSONUtils;
 
@@ -30,16 +36,27 @@ public class MainActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<String[]>,
         SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private static final int ID_WEATHER_LOADER = 0;
-
+    public static final String[] MAIN_PROJECTION = new String[]{
+            WeatherContract.WeatherEntry.COLUMN_DATE,
+            WeatherContract.WeatherEntry.COLUMN_WEEK,
+            WeatherContract.WeatherEntry.COLUMN_DAY_CONDITION,
+            WeatherContract.WeatherEntry.COLUMN_NIGHT_CONDITION,
+            WeatherContract.WeatherEntry.COLUMN_DAY_TEMP,
+            WeatherContract.WeatherEntry.COLUMN_NIGHT_TEMP
+    };
+    public static final int INDEX_WEATHER_DATE = 0;
+    public static final int INDEX_WEATHER_WEEK = 1;
+    public static final int INDEX_WEATHER_DAY_CONDITION = 2;
+    public static final int INDEX_WEATHER_NIGHT_CONDITION = 3;
+    public static final int INDEX_WEATHER_DAY_TEMP = 4;
+    public static final int INDEX_WEATHER_NIGHT_TEMP = 5;
+    private static final int ID_WEATHER_STRING_LOADER = 0;
+    private static boolean pref_flag = false;
     private RecyclerView mRecyclerView;
     private ForecastAdapter mForecastAdapter;
-
     private EditText mSearchCity;
     private TextView mErrorMsgDisplay;
     private ProgressBar mSearchProgressBar;
-
-    private static boolean pref_flag = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,28 +78,25 @@ public class MainActivity extends AppCompatActivity implements
         PreferenceManager.getDefaultSharedPreferences(this)
                 .registerOnSharedPreferenceChangeListener(this);
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String city = sharedPreferences.getString(
-                getString(R.string.pref_city_key),
-                getString(R.string.pref_city_default));
+        String city = MSunshinePreference.getPreferredWeatherCity(this);
         mSearchCity.setText(city);
         mSearchCity.setSelection(city.length());
 
-        getSupportLoaderManager().initLoader(ID_WEATHER_LOADER, null, this);
+        getSupportLoaderManager().initLoader(ID_WEATHER_STRING_LOADER, null, this);
 
     }
 
+    /***
+     * 使偏好生效
+     * */
     @Override
     protected void onStart() {
         super.onStart();
         if (pref_flag) {
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-            String city = sharedPreferences.getString(
-                    getString(R.string.pref_city_key),
-                    getString(R.string.pref_city_default));
+            String city = MSunshinePreference.getPreferredWeatherCity(this);
             mSearchCity.setText(city);
             mSearchCity.setSelection(city.length());
-            getSupportLoaderManager().restartLoader(ID_WEATHER_LOADER, null, this);
+            getSupportLoaderManager().restartLoader(ID_WEATHER_STRING_LOADER, null, this);
             pref_flag = false;
 
         }
@@ -111,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements
         switch (item.getItemId()) {
             case R.id.action_search:
                 mForecastAdapter.setWeatherData(null);
-                getSupportLoaderManager().restartLoader(ID_WEATHER_LOADER, null, this);
+                getSupportLoaderManager().restartLoader(ID_WEATHER_STRING_LOADER, null, this);
                 return true;
             case R.id.action_setting:
                 ExplicitIntentActivityUtils.toSetting(this);
@@ -132,10 +146,22 @@ public class MainActivity extends AppCompatActivity implements
         mErrorMsgDisplay.setVisibility(View.VISIBLE);
     }
 
+    public ContentValues stringToContentValues(String data) {
+        ContentValues values = new ContentValues();
+        String[] strings = data.split("\n");
+        for (int i = 0; i < strings.length; i++)
+            values.put(MAIN_PROJECTION[i], strings[i]);
+        return values;
+    }
+
+    /**
+     * 若搜索成功，则显示搜索到的数据，同时将新数据写入SQLiteDatabase
+     * 若搜索失败，则读取SQLiteDatabase，将从今天开始的天气数据取出显示
+     **/
     @SuppressLint("StaticFieldLeak")
     @NonNull
     @Override
-    public Loader<String[]> onCreateLoader(int id, @Nullable Bundle bundle) {
+    public Loader<String[]> onCreateLoader(final int id, @Nullable Bundle bundle) {
         return new AsyncTaskLoader<String[]>(this) {
 
             String[] weatherData = null;
@@ -153,14 +179,45 @@ public class MainActivity extends AppCompatActivity implements
 
             @Override
             public String[] loadInBackground() {
+
                 String location = mSearchCity.getText().toString();
 
                 try {
                     URL url = NetworkUtils.buildWeatherUrl(location);
                     String urlResponse = NetworkUtils.getResponseFromHttpUrl(url);
-                    weatherData = ParseJSONUtils.getForecastWeatherStringFromJSON(urlResponse);
+                    weatherData = ParseJSONUtils.getForecastWeatherStringFromJSON(getContext(), urlResponse, ParseJSONUtils.TYPE_WEATHER_SUMMARY);
+                    for (String weather : weatherData) {
+                        ContentValues values = stringToContentValues(weather);
+                        new WeatherDbHelper(getContext()).getWritableDatabase().insert(
+                                WeatherContract.WeatherEntry.TABLE_NAME,
+                                null,
+                                values
+                        );
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
+                }
+                if (weatherData == null) {
+                    Cursor cursor = new WeatherDbHelper(getContext()).getReadableDatabase().query(
+                            WeatherContract.WeatherEntry.TABLE_NAME,
+                            MAIN_PROJECTION,
+                            WeatherContract.WeatherEntry.COLUMN_DATE + ">=?",
+                            MSunshineDateUtils.normalizedDateNow(),
+                            null,
+                            null,
+                            WeatherContract.WeatherEntry.COLUMN_DATE + "ASC"
+                    );
+                    if (cursor != null && cursor.moveToFirst())
+                        for (int i = 0; i < cursor.getCount(); i++)
+                            weatherData[i] =
+                                    cursor.getString(MainActivity.INDEX_WEATHER_DATE) +
+                                            cursor.getString(MainActivity.INDEX_WEATHER_WEEK) +
+                                            cursor.getString(MainActivity.INDEX_WEATHER_DAY_CONDITION) +
+                                            cursor.getString(MainActivity.INDEX_WEATHER_NIGHT_CONDITION) +
+                                            cursor.getString(MainActivity.INDEX_WEATHER_DAY_TEMP) +
+                                            cursor.getString(MainActivity.INDEX_WEATHER_NIGHT_TEMP);
+                    assert cursor != null;
+                    cursor.close();
                 }
                 return weatherData;
             }
