@@ -3,13 +3,10 @@ package com.example.msunshine.sync;
 import android.app.IntentService;
 import android.content.Intent;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.example.msunshine.data.ExplicitIntentData;
 
 public class MSunshineSyncIntentService extends IntentService {
-
-    private static final String TAG = "MSunshineSyncIntentServ";
 
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
@@ -23,6 +20,5 @@ public class MSunshineSyncIntentService extends IntentService {
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
         MSunshineSyncTask.syncWeather(MSunshineSyncIntentService.this, intent.getStringExtra(ExplicitIntentData.STRING_CITY_NAME));
-        Log.d(TAG, "onHandleIntent: ");
     }
 }

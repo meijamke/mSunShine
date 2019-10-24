@@ -93,8 +93,8 @@ public class ParseJSONUtils {
      * {
      * "date": "2019-09-09",
      * "dayOfWeek": "1",
-     * "dayCondition": "小雨",
-     * "nightCondition": "小雨",
+     * "dayWeather": "小雨",
+     * "nightWeather": "小雨",
      * "dayTemp": "32℃",
      * "nightTemp": "21℃",
      * "dayWindDirection": "东北",
@@ -125,8 +125,8 @@ public class ParseJSONUtils {
 
         final String DATE = "date";
         final String DAY_OF_WEEK = "dayOfWeek";
-        final String DAY_WEATHER = "dayCondition";
-        final String NIGHT_WEATHER = "nightCondition";
+        final String DAY_WEATHER = "dayWeather";
+        final String NIGHT_WEATHER = "nightWeather";
         final String DAY_TEMP = "dayTemp";
         final String NIGHT_TEMP = "nightTemp";
         final String DAY_WIND_DIRECTION = "dayWindDirection";
@@ -140,7 +140,7 @@ public class ParseJSONUtils {
         if (forecastJson.has(RESULT_CODE)) {
             int code = forecastJson.getInt(RESULT_CODE);
             if (code == 0)
-                return new String[]{forecastJson.getString(RESULT_MESSAGE) + "\n"};
+                return new String[]{""};
         }
 
         JSONObject data = forecastJson.getJSONObject(RESULT_DATA);
@@ -153,7 +153,7 @@ public class ParseJSONUtils {
         for (int i = 0; i < forecast.length(); i++) {
             JSONObject dayForecast = forecast.getJSONObject(i);
 
-            String date = dayForecast.getString(DATE);
+            String date = dayForecast.getString(DATE).trim();
             String dayOfWeek = dayForecast.getString(DAY_OF_WEEK);
             String dayCondition = dayForecast.getString(DAY_WEATHER);
             String nightCondition = dayForecast.getString(NIGHT_WEATHER);

@@ -1,5 +1,6 @@
 package com.example.msunshine;
 
+import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,7 +10,7 @@ import android.widget.TextView;
 
 public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastAdapterViewHolder> {
 
-    private String[] mWeatherData;
+    private Cursor mCursor;
     private OnClickListItemListener mItemListener;
 
     ForecastAdapter(OnClickListItemListener onClickListItemListener) {
@@ -31,8 +32,10 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
 
         @Override
         public void onClick(View v) {
-            String weather = mWeatherData[getAdapterPosition()];
-            mItemListener.onClickItem(weather);
+            if (mCursor.moveToPosition(getAdapterPosition())) {
+                String date = mCursor.getString(MainActivity.INDEX_WEATHER_DATE);
+                mItemListener.onClickItem(date);
+            }
         }
     }
 
@@ -46,18 +49,29 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
 
     @Override
     public void onBindViewHolder(@NonNull ForecastAdapterViewHolder holder, int position) {
-        holder.mWeatherTextView.setText(mWeatherData[position]);
+        if (!(mCursor.moveToPosition(position)))
+            return;
+        String date = mCursor.getString(MainActivity.INDEX_WEATHER_DATE);
+        String week = mCursor.getString(MainActivity.INDEX_WEATHER_WEEK);
+        String dayCondition = mCursor.getString(MainActivity.INDEX_WEATHER_DAY_CONDITION);
+        String nightCondition = mCursor.getString(MainActivity.INDEX_WEATHER_NIGHT_CONDITION);
+        String dayTemp = mCursor.getString(MainActivity.INDEX_WEATHER_DAY_TEMP);
+        String nightTemp = mCursor.getString(MainActivity.INDEX_WEATHER_NIGHT_TEMP);
+        String weatherInfo = String.format("%s\n%s\n%s\n%s\n%s\n%s",
+                date, week, dayCondition, nightCondition, dayTemp, nightTemp);
+        holder.mWeatherTextView.setText(weatherInfo);
+
     }
 
     @Override
     public int getItemCount() {
-        if (mWeatherData != null)
-            return mWeatherData.length;
+        if (mCursor != null)
+            return mCursor.getCount();
         return 0;
     }
 
-    void setWeatherData(String[] weatherData) {
-        mWeatherData = weatherData;
+    void setWeatherData(Cursor weatherData) {
+        mCursor = weatherData;
         notifyDataSetChanged();
     }
 }

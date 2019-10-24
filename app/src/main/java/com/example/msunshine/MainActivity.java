@@ -2,11 +2,12 @@ package com.example.msunshine;
 
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
@@ -20,19 +21,35 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.msunshine.data.MSunshinePreference;
+import com.example.msunshine.data.WeatherContract;
 import com.example.msunshine.sync.MSunshineSyncUtils;
 import com.example.msunshine.utilities.ExplicitIntentActivityUtils;
-import com.example.msunshine.utilities.NetworkUtils;
-import com.example.msunshine.utilities.ParseJSONUtils;
-
-import java.net.URL;
+import com.example.msunshine.utilities.MSunshineDateUtils;
 
 public class MainActivity extends AppCompatActivity implements
         ForecastAdapter.OnClickListItemListener,
-        LoaderManager.LoaderCallbacks<String[]>,
+        LoaderManager.LoaderCallbacks<Cursor>,
         SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private static final int ID_WEATHER_LOADER = 0;
+    private static final String TAG = "MainActivity";
+
+    private static final int ID_WEATHER_CURSOR = 1;
+
+    public static final String[] MAIN_PROJECTION = {
+            WeatherContract.WeatherEntry.COLUMN_DATE,
+            WeatherContract.WeatherEntry.COLUMN_WEEK,
+            WeatherContract.WeatherEntry.COLUMN_DAY_CONDITION,
+            WeatherContract.WeatherEntry.COLUMN_NIGHT_CONDITION,
+            WeatherContract.WeatherEntry.COLUMN_DAY_TEMP,
+            WeatherContract.WeatherEntry.COLUMN_NIGHT_TEMP
+    };
+
+    public static final int INDEX_WEATHER_DATE = 0;
+    public static final int INDEX_WEATHER_WEEK = 1;
+    public static final int INDEX_WEATHER_DAY_CONDITION = 2;
+    public static final int INDEX_WEATHER_NIGHT_CONDITION = 3;
+    public static final int INDEX_WEATHER_DAY_TEMP = 4;
+    public static final int INDEX_WEATHER_NIGHT_TEMP = 5;
 
     private RecyclerView mRecyclerView;
     private ForecastAdapter mForecastAdapter;
@@ -63,11 +80,12 @@ public class MainActivity extends AppCompatActivity implements
         PreferenceManager.getDefaultSharedPreferences(this)
                 .registerOnSharedPreferenceChangeListener(this);
 
-        String city = MSunshinePreference.getPreferedWeatherCity(this);
+        String city = MSunshinePreference.getPreferredWeatherCity(this);
         mSearchCity.setText(city);
         mSearchCity.setSelection(city.length());
 
         MSunshineSyncUtils.startImmediateSync(this, mSearchCity.getText().toString());
+        getSupportLoaderManager().initLoader(ID_WEATHER_CURSOR, null, this);
 
     }
 
@@ -76,10 +94,11 @@ public class MainActivity extends AppCompatActivity implements
         super.onStart();
         if (pref_flag) {
 
-            String city = MSunshinePreference.getPreferedWeatherCity(this);
+            String city = MSunshinePreference.getPreferredWeatherCity(this);
             mSearchCity.setText(city);
             mSearchCity.setSelection(city.length());
             MSunshineSyncUtils.startImmediateSync(this, mSearchCity.getText().toString());
+
             pref_flag = false;
 
         }
@@ -94,6 +113,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onClickItem(String weatherData) {
+//        Uri uri=WeatherContract.CONTENT_URI.buildUpon().appendPath(weatherData).build();
         ExplicitIntentActivityUtils.toWeatherDetail(this, weatherData);
     }
 
@@ -129,63 +149,46 @@ public class MainActivity extends AppCompatActivity implements
         mErrorMsgDisplay.setVisibility(View.VISIBLE);
     }
 
+
     @SuppressLint("StaticFieldLeak")
     @NonNull
     @Override
-    public Loader<String[]> onCreateLoader(int id, @Nullable Bundle bundle) {
-        return new AsyncTaskLoader<String[]>(this) {
+    public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle bundle) {
 
-            String[] weatherData = null;
+        mSearchProgressBar.setVisibility(View.VISIBLE);
 
-            @Override
-            protected void onStartLoading() {
-                super.onStartLoading();
-                if (weatherData != null)
-                    deliverResult(weatherData);
-                else {
-                    mSearchProgressBar.setVisibility(View.VISIBLE);
-                    forceLoad();
-                }
-            }
 
-            @Override
-            public String[] loadInBackground() {
-                String location = mSearchCity.getText().toString();
+        switch (id) {
+            case ID_WEATHER_CURSOR:
+                return new CursorLoader(
+                        this,
+                        WeatherContract.CONTENT_URI,
+                        MAIN_PROJECTION,
+                        WeatherContract.WeatherEntry.COLUMN_DATE + " >= " + MSunshineDateUtils.getNormalizedNow(),
+                        null,
+                        WeatherContract.WeatherEntry.COLUMN_DATE + " ASC");
+            default:
+                throw new RuntimeException("Unknown loader ID :" + id);
+        }
 
-                try {
-                    URL url = NetworkUtils.buildWeatherUrl(location);
-                    String urlResponse = NetworkUtils.getResponseFromHttpUrl(url);
-                    weatherData = ParseJSONUtils.getForecastWeatherStringFromJSON(getContext(), urlResponse, ParseJSONUtils.TYPE_WEATHER_SUMMARY);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                return weatherData;
-            }
-
-            @Override
-            public void deliverResult(@Nullable String[] data) {
-                weatherData = data;
-                super.deliverResult(data);
-            }
-        };
     }
 
     @Override
-    public void onLoadFinished(@NonNull Loader<String[]> loader, String[] weatherData) {
+    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor cursor) {
 
         mSearchProgressBar.setVisibility(View.INVISIBLE);
-        mForecastAdapter.setWeatherData(weatherData);
-
-        if (weatherData != null) {
+        mForecastAdapter.setWeatherData(cursor);
+        if (cursor != null) {
             showWeatherData();
         } else
             showErrorMessage();
     }
 
     @Override
-    public void onLoaderReset(@NonNull Loader<String[]> loader) {
+    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
 
     }
+
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {

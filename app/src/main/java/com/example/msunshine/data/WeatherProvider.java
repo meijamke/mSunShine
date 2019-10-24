@@ -8,11 +8,13 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
+import android.util.Log;
 
 import com.example.msunshine.utilities.MSunshineDateUtils;
 
 public class WeatherProvider extends ContentProvider {
+
+    private static final String TAG = "WeatherProvider";
 
     static final int CODE_WEATHER = 100;
     static final int CODE_WEATHER_DATE = 101;
@@ -24,7 +26,7 @@ public class WeatherProvider extends ContentProvider {
     static UriMatcher buildUriMatcher() {
         UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         uriMatcher.addURI(WeatherContract.CONTENT_AUTHORITY, WeatherContract.PATH_WEATHER, CODE_WEATHER);
-        uriMatcher.addURI(WeatherContract.CONTENT_AUTHORITY, WeatherContract.PATH_WEATHER + "/#", CODE_WEATHER_DATE);
+        uriMatcher.addURI(WeatherContract.CONTENT_AUTHORITY, WeatherContract.PATH_WEATHER + "/*", CODE_WEATHER_DATE);
         return uriMatcher;
     }
 
@@ -55,7 +57,7 @@ public class WeatherProvider extends ContentProvider {
                 cursor = db.query(WeatherContract.WeatherEntry.TABLE_NAME,
                         projection,
                         WeatherContract.WeatherEntry.COLUMN_DATE + "=?",
-                        new String[]{uri.getPathSegments().get(1)},
+                        new String[]{"'" + uri.getPathSegments().get(1) + "'"},
                         null,
                         null,
                         sortOrder);
@@ -94,15 +96,16 @@ public class WeatherProvider extends ContentProvider {
                 try {
                     for (ContentValues value : values) {
                         String date = (String) value.get(WeatherContract.WeatherEntry.COLUMN_DATE);
-                        if (!(TextUtils.isEmpty(date) && MSunshineDateUtils.isValidDate(date, "yyyy/MM/dd")))
-                            throw new IllegalArgumentException("Unsupported date format, date format should be \"yyyy/MM/dd\"");
+                        Log.d(TAG, "bulkInsert: " + date);
+                        if ((MSunshineDateUtils.isValidDate(date)))
+                            throw new IllegalArgumentException("Unsupported date format, date format should be \"yyyy-MM-dd\"");
                         long id = db.insert(WeatherContract.WeatherEntry.TABLE_NAME,
                                 null,
                                 value);
                         if (id != -1)
                             rowsInserted++;
-                        db.setTransactionSuccessful();
                     }
+                    db.setTransactionSuccessful();
                 } finally {
                     db.endTransaction();
                 }
@@ -127,7 +130,7 @@ public class WeatherProvider extends ContentProvider {
             case CODE_WEATHER:
                 assert values != null;
                 String date = (String) values.get(WeatherContract.WeatherEntry.COLUMN_DATE);
-                if (!(TextUtils.isEmpty(date) && MSunshineDateUtils.isValidDate(date, "yyyy/MM/dd")))
+                if (!(MSunshineDateUtils.isValidDate(date)))
                     throw new IllegalArgumentException("Unsupported date format, date format should be \"yyyy/MM/dd\"");
                 long id = db.insert(WeatherContract.WeatherEntry.TABLE_NAME,
                         null,

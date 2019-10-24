@@ -12,7 +12,7 @@ public class ExplicitIntentActivityUtils {
 
     public static void toWeatherDetail(Context context, String weatherData) {
         Intent intent = new Intent(context, WeatherDetailActivity.class);
-        intent.putExtra(ExplicitIntentData.STRING_WEATHER_DATA, weatherData);
+        intent.putExtra(ExplicitIntentData.STRING_CITY_NAME, weatherData);
         context.startActivity(intent);
     }
 

@@ -8,7 +8,7 @@ import com.example.msunshine.R;
 
 public class MSunshinePreference {
 
-    public static String getPreferedWeatherCity(Context context) {
+    public static String getPreferredWeatherCity(Context context) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         return sharedPreferences.getString(
                 context.getString(R.string.pref_city_key),
