@@ -22,7 +22,7 @@ public class MSunshineSyncUtils {
                 Cursor mCursor = context.getContentResolver().query(
                         WeatherContract.CONTENT_URI,
                         new String[]{WeatherContract.WeatherEntry.COLUMN_DATE},
-                        WeatherContract.WeatherEntry.getSQLSelectTodayOnwords(),
+                        WeatherContract.WeatherEntry.getSQLSelectTodayForwords(),
                         null,
                         null
                 );

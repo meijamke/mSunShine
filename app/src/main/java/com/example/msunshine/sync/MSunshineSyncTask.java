@@ -21,13 +21,6 @@ public class MSunshineSyncTask {
             String[] weatherString = ParseJSONUtils.getForecastWeatherStringFromJSON(context, weatherJson, ParseJSONUtils.TYPE_WEATHER_DETAIL);
             ContentValues[] weatherValues = NetworkData.stringToContentValues(weatherString, ParseJSONUtils.TYPE_WEATHER_DETAIL);
 
-//            WeatherDbHelper mDbHelper=new WeatherDbHelper(context);
-//            SQLiteDatabase db=mDbHelper.getWritableDatabase();
-//            db.delete(
-//                    WeatherContract.WeatherEntry.TABLE_NAME,
-//                    null,
-//                    null);
-
             ContentResolver resolver = context.getContentResolver();
             resolver.delete(
                     WeatherContract.CONTENT_URI,

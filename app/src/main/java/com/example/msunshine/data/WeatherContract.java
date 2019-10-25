@@ -29,7 +29,7 @@ public class WeatherContract {
         public static final String COLUMN_DAY_WIND_POWER = "dayWindPower";
         public static final String COLUMN_NIGHT_WIND_POWER = "nightWindPower";
 
-        public static String getSQLSelectTodayOnwords() {
+        public static String getSQLSelectTodayForwords() {
             return WeatherEntry.COLUMN_DATE + " >= " + "'" + MSunshineDateUtils.getNormalizedNow() + "'";
         }
     }

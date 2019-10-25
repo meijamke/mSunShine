@@ -85,24 +85,4 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
         mCursor = weatherData;
         notifyDataSetChanged();
     }
-
-    public interface OnClickListItemListener {
-        void onClickItem(String weatherData);
-    }
-
-    class ForecastAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        final TextView weatherSummaryTextView;
-
-        ForecastAdapterViewHolder(View view) {
-            super(view);
-            weatherSummaryTextView = view.findViewById(R.id.tv_weather_data);
-            view.setOnClickListener(this);
-        }
-
-        @Override
-        public void onClick(View v) {
-            String weather = mWeatherData[getAdapterPosition()];
-            mItemListener.onClickItem(weather);
-        }
-    }
 }

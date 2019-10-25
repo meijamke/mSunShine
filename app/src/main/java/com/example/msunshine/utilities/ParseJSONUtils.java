@@ -170,10 +170,10 @@ public class ParseJSONUtils {
                 parsedWeatherData[i] =
                         date + "\n" +
                                 NetworkData.getWeekName(context, dayOfWeek) + "\n" +
-                                "白天天气：" + dayCondition + "\n" +
-                                "晚上天气：" + nightCondition + "\n" +
-                                "白天温度：" + dayTemp + "\n" +
-                                "晚上温度：" + nightTemp;
+                                NetworkData.getWeatherInfo(context, R.string.day_condition) + dayCondition + "\n" +
+                                NetworkData.getWeatherInfo(context, R.string.night_condition) + nightCondition + "\n" +
+                                NetworkData.getWeatherInfo(context, R.string.day_temp) + dayTemp + "\n" +
+                                NetworkData.getWeatherInfo(context, R.string.night_temp) + nightTemp;
             else if (dataType == TYPE_WEATHER_DETAIL)
                 parsedWeatherData[i] =
                         date + "\n" +

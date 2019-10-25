@@ -1,7 +1,6 @@
 package com.example.msunshine;
 
 import android.annotation.SuppressLint;
-import android.content.ContentValues;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -14,7 +13,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,7 +23,6 @@ import android.widget.TextView;
 import com.example.msunshine.data.MSunshinePreference;
 import com.example.msunshine.data.WeatherContract;
 import com.example.msunshine.sync.MSunshineSyncUtils;
-
 import com.example.msunshine.utilities.ExplicitIntentActivityUtils;
 
 public class MainActivity extends AppCompatActivity implements
@@ -52,13 +49,11 @@ public class MainActivity extends AppCompatActivity implements
     public static final int INDEX_WEATHER_NIGHT_TEMP = 5;
 
 
-    private static boolean pref_flag = false;
     private RecyclerView mRecyclerView;
     private ForecastAdapter mForecastAdapter;
     private EditText mSearchCity;
     private TextView mErrorMsgDisplay;
     private ProgressBar mSearchProgressBar;
-
 
     private static boolean pref_edit_text_flag = false;
 
@@ -90,8 +85,6 @@ public class MainActivity extends AppCompatActivity implements
         mSearchCity.setSelection(city.length());
         MSunshineSyncUtils.initialize(this, mSearchCity.getText().toString());
 
-        getSupportLoaderManager().initLoader(ID_WEATHER_LOADER, null, this);
-
     }
 
     /**
@@ -101,11 +94,9 @@ public class MainActivity extends AppCompatActivity implements
     protected void onStart() {
         super.onStart();
 
-
         if (pref_edit_text_flag) {
 
             String city = MSunshinePreference.getPreferredWeatherCity(this);
-
             mSearchCity.setText(city);
             mSearchCity.setSelection(city.length());
             MSunshineSyncUtils.startImmediateSync(this, mSearchCity.getText().toString());
@@ -184,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements
                         this,
                         WeatherContract.CONTENT_URI,
                         MAIN_PROJECTION,
-                        WeatherContract.WeatherEntry.getSQLSelectTodayOnwords(),
+                        WeatherContract.WeatherEntry.getSQLSelectTodayForwords(),
                         null,
                         WeatherContract.WeatherEntry.COLUMN_DATE + " ASC");
             default:
