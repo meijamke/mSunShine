@@ -6,9 +6,10 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.example.msunshine.utilities.MSunshineDateUtils;
 
@@ -136,7 +137,7 @@ public class WeatherProvider extends ContentProvider {
                         null,
                         values);
                 if (id != -1)
-                    uriInsert = WeatherContract.CONTENT_URI.buildUpon().appendPath(String.valueOf(id)).build();
+                    uriInsert = WeatherContract.WeatherEntry.CONTENT_URI.buildUpon().appendPath(String.valueOf(id)).build();
                 break;
             default:
                 break;

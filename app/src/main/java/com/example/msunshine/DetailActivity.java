@@ -3,16 +3,17 @@ package com.example.msunshine;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.app.ShareCompat;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ShareCompat;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.CursorLoader;
+import androidx.loader.content.Loader;
 
 import com.example.msunshine.data.ExplicitIntentData;
 import com.example.msunshine.data.MSunshinePreference;
@@ -76,7 +77,7 @@ public class DetailActivity extends AppCompatActivity implements
             case ID_WEATHER_DETAIL_CURSOR:
                 return new CursorLoader(
                         this,
-                        WeatherContract.CONTENT_URI,
+                        WeatherContract.WeatherEntry.CONTENT_URI,
                         DETAIL_PROJECTION,
                         WeatherContract.WeatherEntry.COLUMN_DATE + " = " + "'" + weatherDate + "'",
                         null,

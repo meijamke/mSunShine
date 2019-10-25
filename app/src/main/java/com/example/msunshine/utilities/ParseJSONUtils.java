@@ -127,8 +127,8 @@ public class ParseJSONUtils {
 
         final String DATE = "date";
         final String DAY_OF_WEEK = "dayOfWeek";
-        final String DAY_WEATHER = "dayCondition";
-        final String NIGHT_WEATHER = "nightCondition";
+        final String DAY_WEATHER = "dayWeather";
+        final String NIGHT_WEATHER = "nightWeather";
         final String DAY_TEMP = "dayTemp";
         final String NIGHT_TEMP = "nightTemp";
         final String DAY_WIND_DIRECTION = "dayWindDirection";

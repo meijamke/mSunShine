@@ -20,9 +20,9 @@ public class MSunshineSyncUtils {
             @Override
             public void run() {
                 Cursor mCursor = context.getContentResolver().query(
-                        WeatherContract.CONTENT_URI,
+                        WeatherContract.WeatherEntry.CONTENT_URI,
                         new String[]{WeatherContract.WeatherEntry.COLUMN_DATE},
-                        WeatherContract.WeatherEntry.getSQLSelectTodayForwords(),
+                        WeatherContract.WeatherEntry.getSQLSelectTodayForwards(),
                         null,
                         null
                 );

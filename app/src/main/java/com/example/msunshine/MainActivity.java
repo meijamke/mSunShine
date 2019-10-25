@@ -4,21 +4,22 @@ import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.preference.PreferenceManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.CursorLoader;
+import androidx.loader.content.Loader;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.msunshine.data.MSunshinePreference;
 import com.example.msunshine.data.WeatherContract;
@@ -64,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements
 
         mRecyclerView = findViewById(R.id.rv_forecast);
         mForecastAdapter = new ForecastAdapter(this, this);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
 
         mRecyclerView.setAdapter(mForecastAdapter);
         mRecyclerView.setLayoutManager(layoutManager);
@@ -123,12 +124,12 @@ public class MainActivity extends AppCompatActivity implements
         ExplicitIntentActivityUtils.toDetail(this, weatherData);
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
-
     /**
      * 点击菜单栏各个项目时回调的函数
      * **/
@@ -173,9 +174,9 @@ public class MainActivity extends AppCompatActivity implements
             case ID_WEATHER_CURSOR:
                 return new CursorLoader(
                         this,
-                        WeatherContract.CONTENT_URI,
+                        WeatherContract.WeatherEntry.CONTENT_URI,
                         MAIN_PROJECTION,
-                        WeatherContract.WeatherEntry.getSQLSelectTodayForwords(),
+                        WeatherContract.WeatherEntry.getSQLSelectTodayForwards(),
                         null,
                         WeatherContract.WeatherEntry.COLUMN_DATE + " ASC");
             default:

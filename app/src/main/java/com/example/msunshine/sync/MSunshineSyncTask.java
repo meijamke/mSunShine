@@ -11,7 +11,7 @@ import com.example.msunshine.utilities.ParseJSONUtils;
 
 import java.net.URL;
 
-public class MSunshineSyncTask {
+class MSunshineSyncTask {
 
     synchronized static void syncWeather(Context context, String city) {
         URL url = NetworkUtils.buildWeatherUrl(city);
@@ -23,11 +23,11 @@ public class MSunshineSyncTask {
 
             ContentResolver resolver = context.getContentResolver();
             resolver.delete(
-                    WeatherContract.CONTENT_URI,
+                    WeatherContract.WeatherEntry.CONTENT_URI,
                     null,
                     null);
             if (weatherValues != null && weatherValues.length != 0)
-                resolver.bulkInsert(WeatherContract.CONTENT_URI, weatherValues);
+                resolver.bulkInsert(WeatherContract.WeatherEntry.CONTENT_URI, weatherValues);
 
         } catch (Exception e) {
             e.printStackTrace();

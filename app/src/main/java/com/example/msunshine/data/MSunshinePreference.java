@@ -2,7 +2,7 @@ package com.example.msunshine.data;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.v7.preference.PreferenceManager;
+import android.preference.PreferenceManager;
 
 import com.example.msunshine.R;
 
