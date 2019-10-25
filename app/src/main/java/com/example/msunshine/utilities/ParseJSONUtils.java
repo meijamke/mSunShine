@@ -1,6 +1,10 @@
 package com.example.msunshine.utilities;
 
-import com.example.msunshine.data.WeatherInfo;
+
+import android.content.Context;
+
+import com.example.msunshine.R;
+import com.example.msunshine.data.NetworkData;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -107,7 +111,7 @@ public class ParseJSONUtils {
      */
 
 
-    public static String[] getForecastWeatherStringFromJSON(String forecastJsonStr) throws JSONException {
+    public static String[] getForecastWeatherStringFromJSON(Context context, String forecastJsonStr, int dataType) throws JSONException {
 
         //数据成功返回时code=1，失败时coed=0
         final String RESULT_CODE = "code";
@@ -138,7 +142,7 @@ public class ParseJSONUtils {
         if (forecastJson.has(RESULT_CODE)) {
             int code = forecastJson.getInt(RESULT_CODE);
             if (code == 0)
-                return new String[]{forecastJson.getString(RESULT_MESSAGE) + "\n"};
+                return new String[]{""};
         }
 
         JSONObject data = forecastJson.getJSONObject(RESULT_DATA);
@@ -151,7 +155,7 @@ public class ParseJSONUtils {
         for (int i = 0; i < forecast.length(); i++) {
             JSONObject dayForecast = forecast.getJSONObject(i);
 
-            String date = dayForecast.getString(DATE);
+            String date = dayForecast.getString(DATE).trim();
             String dayOfWeek = dayForecast.getString(DAY_OF_WEEK);
             String dayCondition = dayForecast.getString(DAY_WEATHER);
             String nightCondition = dayForecast.getString(NIGHT_WEATHER);
@@ -162,17 +166,26 @@ public class ParseJSONUtils {
             String dayWindPower = dayForecast.getString(DAY_WIND_POWER);
             String nightWindPower = dayForecast.getString(NIGHT_WIND_POWER);
 
-            parsedWeatherData[i] =
-                    date + "\n" +
-                            WeatherInfo.WEEK_NAME[Integer.parseInt(dayOfWeek) - 1] + "\n" +
-                            "白天天气：" + dayCondition + "\n" +
-                            "晚上天气：" + nightCondition + "\n" +
-                            "白天温度：" + dayTemp + "\n" +
-                            "晚上温度：" + nightTemp + "\n" +
-                            "白天风向：" + dayWindDirection + "\n" +
-                            "晚上风向：" + nightWindDirection + "\n" +
-                            "白天风力：" + dayWindPower + "\n" +
-                            "晚上风力：" + nightWindPower + "\n\n";
+            if (dataType == TYPE_WEATHER_SUMMARY)
+                parsedWeatherData[i] =
+                        date + "\n" +
+                                NetworkData.getWeekName(context, dayOfWeek) + "\n" +
+                                "白天天气：" + dayCondition + "\n" +
+                                "晚上天气：" + nightCondition + "\n" +
+                                "白天温度：" + dayTemp + "\n" +
+                                "晚上温度：" + nightTemp;
+            else if (dataType == TYPE_WEATHER_DETAIL)
+                parsedWeatherData[i] =
+                        date + "\n" +
+                                NetworkData.getWeekName(context, dayOfWeek) + "\n" +
+                                NetworkData.getWeatherInfo(context, R.string.day_condition) + dayCondition + "\n" +
+                                NetworkData.getWeatherInfo(context, R.string.night_condition) + nightCondition + "\n" +
+                                NetworkData.getWeatherInfo(context, R.string.day_temp) + dayTemp + "\n" +
+                                NetworkData.getWeatherInfo(context, R.string.night_temp) + nightTemp + "\n" +
+                                NetworkData.getWeatherInfo(context, R.string.day_wind_direction) + dayWindDirection + "\n" +
+                                NetworkData.getWeatherInfo(context, R.string.night_wind_direction) + nightWindDirection + "\n" +
+                                NetworkData.getWeatherInfo(context, R.string.day_wind_power) + dayWindPower + "\n" +
+                                NetworkData.getWeatherInfo(context, R.string.night_wind_power) + nightWindPower;
         }
         return parsedWeatherData;
     }

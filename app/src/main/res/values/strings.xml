@@ -1,17 +1,17 @@
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">SunShine</string>
     <string name="action_search">Search</string>
     <string name="edit_hint">Please input Chinese city in Chinese</string>
     <string name="error_message">Please input Chinese city name, or check your network connection! We try to fetch history data</string>
     <string name="action_share">Share</string>
-    <string name="day_temp">Day Temperature:</string>
-    <string name="night_temp">Night Temperature:</string>
-    <string name="day_weather">Day Weather:</string>
-    <string name="night_weather">Night Weather:</string>
-    <string name="day_wind_direction">Day Wind Direction:</string>
-    <string name="night_wind_direction">Night Wind Direction:</string>
-    <string name="day_wind_power">Day Wind Power:</string>
-    <string name="night_wind_power">Night Wind Power:</string>
+    <string name="day_temp">"Day_Temperature "</string>
+    <string name="night_temp">"Night_Temperature "</string>
+    <string name="day_condition">"Day_Condition "</string>
+    <string name="night_condition">"Night_Condition "</string>
+    <string name="day_wind_direction">"Day_Wind_Direction "</string>
+    <string name="night_wind_direction">"Night_Wind_Direction "</string>
+    <string name="day_wind_power">"Day_Wind_Power "</string>
+    <string name="night_wind_power">"Night_Wind_Power "</string>
     <string name="monday">Monday</string>
     <string name="tuesday">Tuesday</string>
     <string name="wednesday">Wednesday</string>
@@ -31,4 +31,8 @@
     <string name="pref_temp_fahrenheit" translatable="false">Fahrenheit</string>
     <string name="pref_temp_label_centigrade">Centigrade</string>
     <string name="pref_temp_label_fahrenheit">Fahrenheit</string>
+
+    <string name="temperature_format" translatable="false">
+        <xliff:g id="temp">%1.0f</xliff:g>℉
+    </string>
 </resources>

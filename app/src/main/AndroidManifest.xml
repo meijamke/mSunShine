@@ -21,8 +21,10 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".WeatherDetailActivity">
-
+        <activity android:name=".DetailActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+            </intent-filter>
         </activity>
 
         <activity android:name=".SettingActivity">
@@ -33,6 +35,11 @@
             android:authorities="com.example.msunshine.data"
             android:name=".data.WeatherProvider"
             android:exported="false" />
+
+        <service
+            android:name=".sync.MSunshineSyncIntentService"
+            android:exported="false" />
+
     </application>
 
 </manifest>

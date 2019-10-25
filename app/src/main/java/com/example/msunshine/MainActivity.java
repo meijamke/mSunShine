@@ -3,11 +3,12 @@ package com.example.msunshine;
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
@@ -23,20 +24,18 @@ import android.widget.TextView;
 
 import com.example.msunshine.data.MSunshinePreference;
 import com.example.msunshine.data.WeatherContract;
-import com.example.msunshine.utilities.ExplicitIntentActivityUtils;
-import com.example.msunshine.utilities.NetworkUtils;
-import com.example.msunshine.utilities.ParseJSONUtils;
+import com.example.msunshine.sync.MSunshineSyncUtils;
 
-import java.net.URL;
+import com.example.msunshine.utilities.ExplicitIntentActivityUtils;
 
 public class MainActivity extends AppCompatActivity implements
         ForecastAdapter.OnClickListItemListener,
-        LoaderManager.LoaderCallbacks<String[]>,
+        LoaderManager.LoaderCallbacks<Cursor>,
         SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private static final String TAG = "MainActivity";
+    private static final int ID_WEATHER_CURSOR = 1;
 
-    public static final String[] MAIN_PROJECTION = new String[]{
+    public static final String[] MAIN_PROJECTION = {
             WeatherContract.WeatherEntry.COLUMN_DATE,
             WeatherContract.WeatherEntry.COLUMN_WEEK,
             WeatherContract.WeatherEntry.COLUMN_DAY_CONDITION,
@@ -44,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements
             WeatherContract.WeatherEntry.COLUMN_DAY_TEMP,
             WeatherContract.WeatherEntry.COLUMN_NIGHT_TEMP
     };
+
     public static final int INDEX_WEATHER_DATE = 0;
     public static final int INDEX_WEATHER_WEEK = 1;
     public static final int INDEX_WEATHER_DAY_CONDITION = 2;
@@ -51,7 +51,6 @@ public class MainActivity extends AppCompatActivity implements
     public static final int INDEX_WEATHER_DAY_TEMP = 4;
     public static final int INDEX_WEATHER_NIGHT_TEMP = 5;
 
-    private static final int ID_WEATHER_STRING_LOADER = 0;
 
     private static boolean pref_flag = false;
     private RecyclerView mRecyclerView;
@@ -60,13 +59,16 @@ public class MainActivity extends AppCompatActivity implements
     private TextView mErrorMsgDisplay;
     private ProgressBar mSearchProgressBar;
 
+
+    private static boolean pref_edit_text_flag = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         mRecyclerView = findViewById(R.id.rv_forecast);
-        mForecastAdapter = new ForecastAdapter(this);
+        mForecastAdapter = new ForecastAdapter(this, this);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
 
         mRecyclerView.setAdapter(mForecastAdapter);
@@ -80,30 +82,41 @@ public class MainActivity extends AppCompatActivity implements
         PreferenceManager.getDefaultSharedPreferences(this)
                 .registerOnSharedPreferenceChangeListener(this);
 
+        //启动APP时根据 偏好设置的数值 初始化
+        getSupportLoaderManager().initLoader(ID_WEATHER_CURSOR, null, this);
+
         String city = MSunshinePreference.getPreferredWeatherCity(this);
         mSearchCity.setText(city);
         mSearchCity.setSelection(city.length());
+        MSunshineSyncUtils.initialize(this, mSearchCity.getText().toString());
 
-        getSupportLoaderManager().initLoader(ID_WEATHER_STRING_LOADER, null, this);
+        getSupportLoaderManager().initLoader(ID_WEATHER_LOADER, null, this);
 
     }
 
-    /***
-     * 使偏好生效
-     * */
+    /**
+     * 注册偏好设置监听，当偏好设置改变时，更新主活动的UI
+     **/
     @Override
     protected void onStart() {
         super.onStart();
-        if (pref_flag) {
+
+
+        if (pref_edit_text_flag) {
+
             String city = MSunshinePreference.getPreferredWeatherCity(this);
+
             mSearchCity.setText(city);
             mSearchCity.setSelection(city.length());
-            getSupportLoaderManager().restartLoader(ID_WEATHER_STRING_LOADER, null, this);
-            pref_flag = false;
+            MSunshineSyncUtils.startImmediateSync(this, mSearchCity.getText().toString());
 
+            pref_edit_text_flag = false;
         }
     }
 
+    /**
+     * 注销偏好设置监听
+     **/
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -111,9 +124,12 @@ public class MainActivity extends AppCompatActivity implements
                 .unregisterOnSharedPreferenceChangeListener(this);
     }
 
+    /**
+     * 点击recyclerView列表项目时回调的函数
+     **/
     @Override
     public void onClickItem(String weatherData) {
-        ExplicitIntentActivityUtils.toWeatherDetail(this, weatherData);
+        ExplicitIntentActivityUtils.toDetail(this, weatherData);
     }
 
     @Override
@@ -122,12 +138,15 @@ public class MainActivity extends AppCompatActivity implements
         return true;
     }
 
+    /**
+     * 点击菜单栏各个项目时回调的函数
+     * **/
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_search:
                 mForecastAdapter.setWeatherData(null);
-                getSupportLoaderManager().restartLoader(ID_WEATHER_STRING_LOADER, null, this);
+                MSunshineSyncUtils.startImmediateSync(this, mSearchCity.getText().toString());
                 return true;
             case R.id.action_setting:
                 ExplicitIntentActivityUtils.toSetting(this);
@@ -148,118 +167,57 @@ public class MainActivity extends AppCompatActivity implements
         mErrorMsgDisplay.setVisibility(View.VISIBLE);
     }
 
-    public ContentValues stringToContentValues(String data) {
-        ContentValues values = new ContentValues();
-        String[] strings = data.split("\n");
-        for (int i = 0; i < strings.length; i++)
-            values.put(MAIN_PROJECTION[i], strings[i]);
-        return values;
-    }
-
     /**
-     * 若搜索成功，则显示搜索到的数据，同时将新数据写入SQLiteDatabase
-     * 若搜索失败，则读取SQLiteDatabase，将从今天开始的天气数据取出显示
-     **/
+     * 从SQLiteDatabase读取数据
+     * **/
     @SuppressLint("StaticFieldLeak")
     @NonNull
     @Override
-    public Loader<String[]> onCreateLoader(final int id, @Nullable Bundle bundle) {
-        return new AsyncTaskLoader<String[]>(this) {
+    public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle bundle) {
 
-            String[] weatherData = null;
+        mSearchProgressBar.setVisibility(View.VISIBLE);
 
-            @Override
-            protected void onStartLoading() {
-                super.onStartLoading();
-                if (weatherData != null)
-                    deliverResult(weatherData);
-                else {
-                    mSearchProgressBar.setVisibility(View.VISIBLE);
-                    forceLoad();
-                }
-            }
 
-            @Override
-            public String[] loadInBackground() {
+        switch (id) {
+            case ID_WEATHER_CURSOR:
+                return new CursorLoader(
+                        this,
+                        WeatherContract.CONTENT_URI,
+                        MAIN_PROJECTION,
+                        WeatherContract.WeatherEntry.getSQLSelectTodayOnwords(),
+                        null,
+                        WeatherContract.WeatherEntry.COLUMN_DATE + " ASC");
+            default:
+                throw new RuntimeException("Unknown loader ID :" + id);
+        }
 
-                String location = mSearchCity.getText().toString();
-
-                try {
-                    URL url = NetworkUtils.buildWeatherUrl(location);
-                    Log.d(TAG, "loadInBackground: " + url);
-                    String urlResponse = NetworkUtils.getResponseFromHttpUrl(url);
-                    weatherData = ParseJSONUtils.getForecastWeatherStringFromJSON(urlResponse);
-                    Log.d(TAG, "loadInBackground: ");
-//                    new Thread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            for (String weather : weatherData) {
-//                                ContentValues values = stringToContentValues(weather);
-//                                new WeatherDbHelper(getContext()).getWritableDatabase().insert(
-//                                        WeatherContract.WeatherEntry.TABLE_NAME,
-//                                        null,
-//                                        values
-//                                );
-//                            }
-//                        }
-//                    }).start();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-//                if (weatherData == null) {
-//                    Cursor cursor = new WeatherDbHelper(getContext()).getReadableDatabase().query(
-//                            WeatherContract.WeatherEntry.TABLE_NAME,
-//                            MAIN_PROJECTION,
-//                            WeatherContract.WeatherEntry.COLUMN_DATE + ">=?",
-//                            MSunshineDateUtils.normalizedDateNow(),
-//                            null,
-//                            null,
-//                            WeatherContract.WeatherEntry.COLUMN_DATE + "ASC"
-//                    );
-//                    if (cursor != null && cursor.moveToFirst()) {
-//                        mForecastAdapter.swapCursor(cursor);
-//                        for (int i = 0; i < cursor.getCount(); i++)
-//                            weatherData[i] =
-//                                    cursor.getString(MainActivity.INDEX_WEATHER_DATE) +
-//                                    cursor.getString(MainActivity.INDEX_WEATHER_WEEK) +
-//                                    cursor.getString(MainActivity.INDEX_WEATHER_DAY_CONDITION) +
-//                                    cursor.getString(MainActivity.INDEX_WEATHER_NIGHT_CONDITION) +
-//                                    cursor.getString(MainActivity.INDEX_WEATHER_DAY_TEMP) +
-//                                    cursor.getString(MainActivity.INDEX_WEATHER_NIGHT_TEMP);
-//                    }
-//                        assert cursor != null;
-//                    cursor.close();
-//                }
-                return weatherData;
-            }
-
-            @Override
-            public void deliverResult(@Nullable String[] data) {
-                weatherData = data;
-                super.deliverResult(data);
-            }
-        };
     }
 
+    /**
+     * 用读取到的SQLiteDatabase的数据来更新recyclerView列表项目
+     * **/
     @Override
-    public void onLoadFinished(@NonNull Loader<String[]> loader, String[] weatherData) {
+    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor cursor) {
 
         mSearchProgressBar.setVisibility(View.INVISIBLE);
-        mForecastAdapter.setWeatherData(weatherData);
-
-        if (weatherData != null) {
+        mForecastAdapter.setWeatherData(cursor);
+        if (cursor != null) {
             showWeatherData();
         } else
             showErrorMessage();
     }
 
     @Override
-    public void onLoaderReset(@NonNull Loader<String[]> loader) {
+    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
 
     }
 
+    /**
+     * 偏好设置的值改变时回调的函数
+     * **/
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        pref_flag = true;
+        if (key.equals(getString(R.string.pref_city_key)))
+            pref_edit_text_flag = true;
     }
 }
