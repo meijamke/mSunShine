@@ -3,6 +3,8 @@ package com.example.msunshine.data;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
+import com.example.msunshine.utilities.MSunshineDateUtils;
+
 public class WeatherContract {
 
     static final String CONTENT_AUTHORITY = "com.example.msunshine.data";
@@ -26,5 +28,9 @@ public class WeatherContract {
         public static final String COLUMN_NIGHT_WIND_DIRECTION = "nightWindDirect";
         public static final String COLUMN_DAY_WIND_POWER = "dayWindPower";
         public static final String COLUMN_NIGHT_WIND_POWER = "nightWindPower";
+
+        public static String getSQLSelectTodayOnwords() {
+            return WeatherEntry.COLUMN_DATE + " >= " + "'" + MSunshineDateUtils.getNormalizedNow() + "'";
+        }
     }
 }

@@ -24,7 +24,6 @@ import com.example.msunshine.data.MSunshinePreference;
 import com.example.msunshine.data.WeatherContract;
 import com.example.msunshine.sync.MSunshineSyncUtils;
 import com.example.msunshine.utilities.ExplicitIntentActivityUtils;
-import com.example.msunshine.utilities.MSunshineDateUtils;
 
 public class MainActivity extends AppCompatActivity implements
         ForecastAdapter.OnClickListItemListener,
@@ -57,7 +56,6 @@ public class MainActivity extends AppCompatActivity implements
     private ProgressBar mSearchProgressBar;
 
     private static boolean pref_edit_text_flag = false;
-    private static boolean pref_temp_units_flag = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,12 +78,13 @@ public class MainActivity extends AppCompatActivity implements
                 .registerOnSharedPreferenceChangeListener(this);
 
         //启动APP时根据 偏好设置的数值 初始化
+        getSupportLoaderManager().initLoader(ID_WEATHER_CURSOR, null, this);
+
         String city = MSunshinePreference.getPreferredWeatherCity(this);
         mSearchCity.setText(city);
         mSearchCity.setSelection(city.length());
-        MSunshineSyncUtils.startImmediateSync(this, mSearchCity.getText().toString());
+        MSunshineSyncUtils.initialize(this, mSearchCity.getText().toString());
 
-        getSupportLoaderManager().initLoader(ID_WEATHER_CURSOR, null, this);
 
     }
 
@@ -104,9 +103,6 @@ public class MainActivity extends AppCompatActivity implements
             MSunshineSyncUtils.startImmediateSync(this, mSearchCity.getText().toString());
 
             pref_edit_text_flag = false;
-        } else if (pref_temp_units_flag) {
-
-            pref_temp_units_flag = false;
         }
     }
 
@@ -125,8 +121,7 @@ public class MainActivity extends AppCompatActivity implements
      **/
     @Override
     public void onClickItem(String weatherData) {
-//        Uri uri=WeatherContract.CONTENT_URI.buildUpon().appendPath(weatherData).build();
-        ExplicitIntentActivityUtils.toWeatherDetail(this, weatherData);
+        ExplicitIntentActivityUtils.toDetail(this, weatherData);
     }
 
     @Override
@@ -182,7 +177,7 @@ public class MainActivity extends AppCompatActivity implements
                         this,
                         WeatherContract.CONTENT_URI,
                         MAIN_PROJECTION,
-                        WeatherContract.WeatherEntry.COLUMN_DATE + " >= " + "'" + MSunshineDateUtils.getNormalizedNow() + "'",
+                        WeatherContract.WeatherEntry.getSQLSelectTodayOnwords(),
                         null,
                         WeatherContract.WeatherEntry.COLUMN_DATE + " ASC");
             default:
@@ -217,7 +212,5 @@ public class MainActivity extends AppCompatActivity implements
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(getString(R.string.pref_city_key)))
             pref_edit_text_flag = true;
-        else if (key.equals(getString(R.string.pref_temp_units_key)))
-            pref_temp_units_flag = true;
     }
 }
