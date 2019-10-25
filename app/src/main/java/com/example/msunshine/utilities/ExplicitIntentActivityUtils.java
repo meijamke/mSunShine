@@ -5,13 +5,13 @@ import android.content.Intent;
 
 import com.example.msunshine.MainActivity;
 import com.example.msunshine.SettingActivity;
-import com.example.msunshine.WeatherDetailActivity;
+import com.example.msunshine.DetailActivity;
 import com.example.msunshine.data.ExplicitIntentData;
 
 public class ExplicitIntentActivityUtils {
 
     public static void toWeatherDetail(Context context, String weatherData) {
-        Intent intent = new Intent(context, WeatherDetailActivity.class);
+        Intent intent = new Intent(context, DetailActivity.class);
         intent.putExtra(ExplicitIntentData.STRING_CITY_NAME, weatherData);
         context.startActivity(intent);
     }

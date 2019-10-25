@@ -31,8 +31,6 @@ public class MainActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor>,
         SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private static final String TAG = "MainActivity";
-
     private static final int ID_WEATHER_CURSOR = 1;
 
     public static final String[] MAIN_PROJECTION = {
@@ -58,7 +56,8 @@ public class MainActivity extends AppCompatActivity implements
     private TextView mErrorMsgDisplay;
     private ProgressBar mSearchProgressBar;
 
-    private static boolean pref_flag = false;
+    private static boolean pref_edit_text_flag = false;
+    private static boolean pref_temp_units_flag = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
 
         mRecyclerView = findViewById(R.id.rv_forecast);
-        mForecastAdapter = new ForecastAdapter(this);
+        mForecastAdapter = new ForecastAdapter(this, this);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
 
         mRecyclerView.setAdapter(mForecastAdapter);
@@ -80,30 +79,40 @@ public class MainActivity extends AppCompatActivity implements
         PreferenceManager.getDefaultSharedPreferences(this)
                 .registerOnSharedPreferenceChangeListener(this);
 
+        //启动APP时根据 偏好设置的数值 初始化
         String city = MSunshinePreference.getPreferredWeatherCity(this);
         mSearchCity.setText(city);
         mSearchCity.setSelection(city.length());
-
         MSunshineSyncUtils.startImmediateSync(this, mSearchCity.getText().toString());
+
         getSupportLoaderManager().initLoader(ID_WEATHER_CURSOR, null, this);
 
     }
 
+    /**
+     * 注册偏好设置监听，当偏好设置改变时，更新主活动的UI
+     **/
     @Override
     protected void onStart() {
         super.onStart();
-        if (pref_flag) {
+
+        if (pref_edit_text_flag) {
 
             String city = MSunshinePreference.getPreferredWeatherCity(this);
             mSearchCity.setText(city);
             mSearchCity.setSelection(city.length());
             MSunshineSyncUtils.startImmediateSync(this, mSearchCity.getText().toString());
 
-            pref_flag = false;
+            pref_edit_text_flag = false;
+        } else if (pref_temp_units_flag) {
 
+            pref_temp_units_flag = false;
         }
     }
 
+    /**
+     * 注销偏好设置监听
+     **/
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -111,6 +120,9 @@ public class MainActivity extends AppCompatActivity implements
                 .unregisterOnSharedPreferenceChangeListener(this);
     }
 
+    /**
+     * 点击recyclerView列表项目时回调的函数
+     **/
     @Override
     public void onClickItem(String weatherData) {
 //        Uri uri=WeatherContract.CONTENT_URI.buildUpon().appendPath(weatherData).build();
@@ -123,6 +135,9 @@ public class MainActivity extends AppCompatActivity implements
         return true;
     }
 
+    /**
+     * 点击菜单栏各个项目时回调的函数
+     * **/
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -150,6 +165,9 @@ public class MainActivity extends AppCompatActivity implements
     }
 
 
+    /**
+     * 从SQLiteDatabase读取数据
+     * **/
     @SuppressLint("StaticFieldLeak")
     @NonNull
     @Override
@@ -164,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements
                         this,
                         WeatherContract.CONTENT_URI,
                         MAIN_PROJECTION,
-                        WeatherContract.WeatherEntry.COLUMN_DATE + " >= " + MSunshineDateUtils.getNormalizedNow(),
+                        WeatherContract.WeatherEntry.COLUMN_DATE + " >= " + "'" + MSunshineDateUtils.getNormalizedNow() + "'",
                         null,
                         WeatherContract.WeatherEntry.COLUMN_DATE + " ASC");
             default:
@@ -173,6 +191,9 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
+    /**
+     * 用读取到的SQLiteDatabase的数据来更新recyclerView列表项目
+     * **/
     @Override
     public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor cursor) {
 
@@ -189,9 +210,14 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
-
+    /**
+     * 偏好设置的值改变时回调的函数
+     * **/
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        pref_flag = true;
+        if (key.equals(getString(R.string.pref_city_key)))
+            pref_edit_text_flag = true;
+        else if (key.equals(getString(R.string.pref_temp_units_key)))
+            pref_temp_units_flag = true;
     }
 }

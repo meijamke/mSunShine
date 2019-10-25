@@ -15,10 +15,11 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.example.msunshine.data.ExplicitIntentData;
+import com.example.msunshine.data.MSunshinePreference;
 import com.example.msunshine.data.WeatherContract;
 import com.example.msunshine.utilities.ExplicitIntentActivityUtils;
 
-public class WeatherDetailActivity extends AppCompatActivity implements
+public class DetailActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor> {
 
     private String weatherDate;
@@ -61,7 +62,7 @@ public class WeatherDetailActivity extends AppCompatActivity implements
 
         weatherDate = getIntent().getStringExtra(ExplicitIntentData.STRING_CITY_NAME);
         if (weatherDate == null)
-            throw new NullPointerException("Uri for detailActivity cannot be null");
+            throw new NullPointerException("String date for detailActivity cannot be null");
 
         getSupportLoaderManager().initLoader(ID_WEATHER_DETAIL_CURSOR, null, this);
     }
@@ -77,7 +78,7 @@ public class WeatherDetailActivity extends AppCompatActivity implements
                         this,
                         WeatherContract.CONTENT_URI,
                         DETAIL_PROJECTION,
-                        WeatherContract.WeatherEntry.COLUMN_DATE + " = " + weatherDate,
+                        WeatherContract.WeatherEntry.COLUMN_DATE + " = " + "'" + weatherDate + "'",
                         null,
                         null);
             default:
@@ -92,29 +93,28 @@ public class WeatherDetailActivity extends AppCompatActivity implements
         if (!(cursor != null && cursor.moveToFirst()))
             return;
 
-        StringBuilder stringBuilder = new StringBuilder();
+        String dayTemperature = cursor.getString(DetailActivity.INDEX_WEATHER_DAY_TEMP);
+        String nightTemperature = cursor.getString(DetailActivity.INDEX_WEATHER_NIGHT_TEMP);
 
-        stringBuilder.append(cursor.getString(WeatherDetailActivity.INDEX_WEATHER_DATE));
-        stringBuilder.append("\n");
-        stringBuilder.append(cursor.getString(WeatherDetailActivity.INDEX_WEATHER_WEEK));
-        stringBuilder.append("\n");
-        stringBuilder.append(cursor.getString(WeatherDetailActivity.INDEX_WEATHER_DAY_CONDITION));
-        stringBuilder.append("\n");
-        stringBuilder.append(cursor.getString(WeatherDetailActivity.INDEX_WEATHER_NIGHT_CONDITION));
-        stringBuilder.append("\n");
-        stringBuilder.append(cursor.getString(WeatherDetailActivity.INDEX_WEATHER_DAY_TEMP));
-        stringBuilder.append("\n");
-        stringBuilder.append(cursor.getString(WeatherDetailActivity.INDEX_WEATHER_NIGHT_TEMP));
-        stringBuilder.append("\n");
-        stringBuilder.append(cursor.getString(WeatherDetailActivity.INDEX_WEATHER_DAY_WIND_DIRECTION));
-        stringBuilder.append("\n");
-        stringBuilder.append(cursor.getString(WeatherDetailActivity.INDEX_WEATHER_NIGHT_WIND_DIRECTION));
-        stringBuilder.append("\n");
-        stringBuilder.append(cursor.getString(WeatherDetailActivity.INDEX_WEATHER_DAY_WIND_POWER));
-        stringBuilder.append("\n");
-        stringBuilder.append(cursor.getString(WeatherDetailActivity.INDEX_WEATHER_NIGHT_WIND_POWER));
-
-        weatherString = stringBuilder.toString();
+        weatherString = cursor.getString(DetailActivity.INDEX_WEATHER_DATE) +
+                "\n" +
+                cursor.getString(DetailActivity.INDEX_WEATHER_WEEK) +
+                "\n" +
+                cursor.getString(DetailActivity.INDEX_WEATHER_DAY_CONDITION) +
+                "\n" +
+                cursor.getString(DetailActivity.INDEX_WEATHER_NIGHT_CONDITION) +
+                "\n" +
+                MSunshinePreference.formatTemperature(this, dayTemperature) +
+                "\n" +
+                MSunshinePreference.formatTemperature(this, nightTemperature) +
+                "\n" +
+                cursor.getString(DetailActivity.INDEX_WEATHER_DAY_WIND_DIRECTION) +
+                "\n" +
+                cursor.getString(DetailActivity.INDEX_WEATHER_NIGHT_WIND_DIRECTION) +
+                "\n" +
+                cursor.getString(DetailActivity.INDEX_WEATHER_DAY_WIND_POWER) +
+                "\n" +
+                cursor.getString(DetailActivity.INDEX_WEATHER_NIGHT_WIND_POWER);
         mWeatherDetailTextView.setText(weatherString);
     }
 

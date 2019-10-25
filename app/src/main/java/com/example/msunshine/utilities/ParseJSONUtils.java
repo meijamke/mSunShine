@@ -2,7 +2,8 @@ package com.example.msunshine.utilities;
 
 import android.content.Context;
 
-import com.example.msunshine.data.WeatherData;
+import com.example.msunshine.R;
+import com.example.msunshine.data.NetworkData;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -167,7 +168,7 @@ public class ParseJSONUtils {
             if (dataType == TYPE_WEATHER_SUMMARY)
                 parsedWeatherData[i] =
                         date + "\n" +
-                                WeatherData.getWeekName(context, dayOfWeek) + "\n" +
+                                NetworkData.getWeekName(context, dayOfWeek) + "\n" +
                                 "白天天气：" + dayCondition + "\n" +
                                 "晚上天气：" + nightCondition + "\n" +
                                 "白天温度：" + dayTemp + "\n" +
@@ -175,15 +176,15 @@ public class ParseJSONUtils {
             else if (dataType == TYPE_WEATHER_DETAIL)
                 parsedWeatherData[i] =
                         date + "\n" +
-                                WeatherData.getWeekName(context, dayOfWeek) + "\n" +
-                                "白天天气：" + dayCondition + "\n" +
-                                "晚上天气：" + nightCondition + "\n" +
-                                "白天温度：" + dayTemp + "\n" +
-                                "晚上温度：" + nightTemp + "\n" +
-                                "白天风向：" + dayWindDirection + "\n" +
-                                "晚上风向：" + nightWindDirection + "\n" +
-                                "白天风力：" + dayWindPower + "\n" +
-                                "晚上风力：" + nightWindPower;
+                                NetworkData.getWeekName(context, dayOfWeek) + "\n" +
+                                NetworkData.getWeatherInfo(context, R.string.day_condition) + dayCondition + "\n" +
+                                NetworkData.getWeatherInfo(context, R.string.night_condition) + nightCondition + "\n" +
+                                NetworkData.getWeatherInfo(context, R.string.day_temp) + dayTemp + "\n" +
+                                NetworkData.getWeatherInfo(context, R.string.night_temp) + nightTemp + "\n" +
+                                NetworkData.getWeatherInfo(context, R.string.day_wind_direction) + dayWindDirection + "\n" +
+                                NetworkData.getWeatherInfo(context, R.string.night_wind_direction) + nightWindDirection + "\n" +
+                                NetworkData.getWeatherInfo(context, R.string.day_wind_power) + dayWindPower + "\n" +
+                                NetworkData.getWeatherInfo(context, R.string.night_wind_power) + nightWindPower;
         }
         return parsedWeatherData;
     }

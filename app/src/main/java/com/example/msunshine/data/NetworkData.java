@@ -7,7 +7,7 @@ import android.content.Context;
 import com.example.msunshine.R;
 import com.example.msunshine.utilities.ParseJSONUtils;
 
-public class WeatherData {
+public class NetworkData {
 
     public static String getWeekName(Context context, String date) {
         int number = Integer.parseInt(date);
@@ -30,6 +30,39 @@ public class WeatherData {
                 break;
         }
         return null;
+    }
+
+    public static String getWeatherInfo(Context context, int weatherResId) {
+        String weatherInfo = "";
+        switch (weatherResId) {
+            case R.string.day_condition:
+                weatherInfo = context.getString(R.string.day_condition);
+                break;
+            case R.string.night_condition:
+                weatherInfo = context.getString(R.string.night_condition);
+                break;
+            case R.string.day_temp:
+                weatherInfo = context.getString(R.string.day_temp);
+                break;
+            case R.string.night_temp:
+                weatherInfo = context.getString(R.string.night_temp);
+                break;
+            case R.string.day_wind_direction:
+                weatherInfo = context.getString(R.string.day_wind_direction);
+                break;
+            case R.string.night_wind_direction:
+                weatherInfo = context.getString(R.string.night_wind_direction);
+                break;
+            case R.string.day_wind_power:
+                weatherInfo = context.getString(R.string.day_wind_power);
+                break;
+            case R.string.night_wind_power:
+                weatherInfo = context.getString(R.string.night_wind_power);
+                break;
+            default:
+                break;
+        }
+        return weatherInfo;
     }
 
     public static ContentValues[] stringToContentValues(String[] data, int dataType) {
@@ -68,5 +101,4 @@ public class WeatherData {
             }
         return contentValues;
     }
-
 }

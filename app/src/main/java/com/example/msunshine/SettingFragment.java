@@ -30,6 +30,10 @@ public class SettingFragment extends PreferenceFragmentCompat implements
                 setPreferenceSummary(pref, value);
             }
         }
+
+        //监听EditText
+        Preference cityPreference = findPreference(getString(R.string.pref_city_key));
+        cityPreference.setOnPreferenceChangeListener(this);
     }
 
     /**
@@ -53,6 +57,8 @@ public class SettingFragment extends PreferenceFragmentCompat implements
      **/
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+
+
         Preference preference = findPreference(key);
         String value = sharedPreferences.getString(key, "");
         if (preference != null)
@@ -65,7 +71,8 @@ public class SettingFragment extends PreferenceFragmentCompat implements
      * 每一次数值写入sharedPreference文件 前 都会调用onPreferenceChange，
      * 所以为了在数值写入文件前检查EditPreference的value是否为汉字，需要重写该方法
      *
-     * but the code seems doesn't work
+     * 然后需要在onCreatePreference方法中注册监听该偏好
+     * setOnPreferenceChangeListener
      * */
     @Override
     public boolean onPreferenceChange(Preference preference, Object newValues) {
