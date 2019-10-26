@@ -6,6 +6,8 @@ import android.preference.PreferenceManager;
 
 import com.example.msunshine.R;
 
+import java.util.concurrent.TimeUnit;
+
 public class MSunshinePreference {
 	
     /**
@@ -47,4 +49,30 @@ public class MSunshinePreference {
         return celsiusToFahrenheit(context, temperature);
     }
 
+    public static boolean getPreferredWeatherNotification(Context context) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return sharedPreferences.getBoolean(context.getString(R.string.pref_notification_key),
+                context.getResources().getBoolean(R.bool.pref_notification_default));
+    }
+
+    public static void saveLastNotificationTime(Context context) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putLong(
+                context.getString(R.string.last_notification_key),
+                System.currentTimeMillis());
+        editor.apply();
+    }
+
+    public static boolean overOneDaySinceLastNotificationTime(Context context) {
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        long lastTime = sharedPreferences.getLong(
+                context.getString(R.string.last_notification_key),
+                0);
+        long timeNow = System.currentTimeMillis();
+        if (lastTime != 0)
+            return (timeNow - lastTime) >= TimeUnit.DAYS.toMillis(1);
+        return false;
+    }
 }

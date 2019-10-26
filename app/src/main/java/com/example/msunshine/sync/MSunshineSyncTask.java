@@ -4,9 +4,11 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 
-import com.example.msunshine.data.WeatherContract;
+import com.example.msunshine.data.MSunshinePreference;
 import com.example.msunshine.data.NetworkData;
+import com.example.msunshine.data.WeatherContract;
 import com.example.msunshine.utilities.NetworkUtils;
+import com.example.msunshine.utilities.NotificationUtils;
 import com.example.msunshine.utilities.ParseJSONUtils;
 
 import java.net.URL;
@@ -28,6 +30,10 @@ class MSunshineSyncTask {
                     null);
             if (weatherValues != null && weatherValues.length != 0)
                 resolver.bulkInsert(WeatherContract.WeatherEntry.CONTENT_URI, weatherValues);
+
+            if (MSunshinePreference.getPreferredWeatherNotification(context) &&
+                    MSunshinePreference.overOneDaySinceLastNotificationTime(context))
+                NotificationUtils.notifyUserTodayWeather(context);
 
         } catch (Exception e) {
             e.printStackTrace();

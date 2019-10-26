@@ -35,9 +35,8 @@ public class MSunshineDateUtils {
         return false;
     }
 
-    public static String getNormalizedNow() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);
+    public static String getNormalizedDayNow() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         return dateFormat.format(Calendar.getInstance().getTime());
     }
-
 }

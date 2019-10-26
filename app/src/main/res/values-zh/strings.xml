@@ -25,5 +25,8 @@
     <string name="pref_temp_units_label">温度单位</string>
     <string name="pref_temp_label_centigrade">摄氏度</string>
     <string name="pref_temp_label_fahrenheit">华氏度</string>
+    <string name="pref_notification_label">天气通知</string>
+    <string name="pref_notification_off">关闭</string>
+    <string name="pref_notification_on">打开</string>
 
 </resources>

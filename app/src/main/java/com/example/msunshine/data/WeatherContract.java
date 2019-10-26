@@ -32,7 +32,7 @@ public class WeatherContract {
         public static final String COLUMN_NIGHT_WIND_POWER = "nightWindPower";
 
         public static String getSQLSelectTodayForwards() {
-            return WeatherEntry.COLUMN_DATE + " >= " + "'" + MSunshineDateUtils.getNormalizedNow() + "'";
+            return WeatherEntry.COLUMN_DATE + " >= " + "'" + MSunshineDateUtils.getNormalizedDayNow() + "'";
         }
     }
 }

@@ -20,6 +20,7 @@
     <string name="saturday">Saturday</string>
     <string name="sunday">Sunday</string>
     <string name="action_setting">Setting</string>
+
     <string name="pref_city_key" translatable="false">City Key</string>
     <string name="pref_city_default" translatable="false">广州</string>
     <string name="pref_city_label">City</string>
@@ -32,7 +33,15 @@
     <string name="pref_temp_label_centigrade">Centigrade</string>
     <string name="pref_temp_label_fahrenheit">Fahrenheit</string>
 
+    <string name="pref_notification_key" translatable="false">Notification Key</string>
+    <string name="pref_notification_default" translatable="false">Notification Default</string>
+    <string name="pref_notification_label">Weather notification</string>
+    <string name="pref_notification_on">Enabled</string>
+    <string name="pref_notification_off">Not Enabled</string>
+
     <string name="temperature_format" translatable="false">
         <xliff:g id="temp">%1.0f</xliff:g>℉
     </string>
+    <string name="last_notification_key" translatable="false">Key Last Notification</string>
+
 </resources>
