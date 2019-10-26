@@ -15,7 +15,7 @@ import androidx.loader.app.LoaderManager;
 import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
 
-import com.example.msunshine.data.ExplicitIntentData;
+import com.example.msunshine.data.IntentData;
 import com.example.msunshine.data.MSunshinePreference;
 import com.example.msunshine.data.WeatherContract;
 import com.example.msunshine.utilities.ExplicitIntentActivityUtils;
@@ -61,7 +61,7 @@ public class DetailActivity extends AppCompatActivity implements
 
         mWeatherDetailTextView = findViewById(R.id.detail_text_view);
 
-        weatherDate = getIntent().getStringExtra(ExplicitIntentData.STRING_CITY_NAME);
+        weatherDate = getIntent().getStringExtra(IntentData.STRING_CITY_NAME);
         if (weatherDate == null)
             throw new NullPointerException("String date for detailActivity cannot be null");
 

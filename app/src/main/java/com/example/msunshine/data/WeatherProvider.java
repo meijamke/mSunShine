@@ -6,7 +6,6 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,8 +13,6 @@ import androidx.annotation.Nullable;
 import com.example.msunshine.utilities.MSunshineDateUtils;
 
 public class WeatherProvider extends ContentProvider {
-
-    private static final String TAG = "WeatherProvider";
 
     static final int CODE_WEATHER = 100;
     static final int CODE_WEATHER_DATE = 101;
@@ -96,10 +93,10 @@ public class WeatherProvider extends ContentProvider {
                 db.beginTransaction();
                 try {
                     for (ContentValues value : values) {
-                        String date = (String) value.get(WeatherContract.WeatherEntry.COLUMN_DATE);
-                        Log.d(TAG, "bulkInsert: " + date);
-                        if ((MSunshineDateUtils.isValidDate(date)))
+                        String date = value.getAsString(WeatherContract.WeatherEntry.COLUMN_DATE);
+                        if (!(MSunshineDateUtils.isValidDate(date))) {
                             throw new IllegalArgumentException("Unsupported date format, date format should be \"yyyy-MM-dd\"");
+                        }
                         long id = db.insert(WeatherContract.WeatherEntry.TABLE_NAME,
                                 null,
                                 value);

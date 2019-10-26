@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 public class MSunshineDateUtils {
 
     public static boolean isValidDate(String date) {
-
+//        date=date.trim();
         String format = "(20[0-9]{2})-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])";
 //        + "([01]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]";
         Pattern pattern = Pattern.compile(format);
@@ -30,9 +30,9 @@ public class MSunshineDateUtils {
                     return (lastDay >= d);
                 }
             }
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 
     public static String getNormalizedNow() {

@@ -5,7 +5,7 @@ import android.content.Intent;
 
 import androidx.annotation.Nullable;
 
-import com.example.msunshine.data.ExplicitIntentData;
+import com.example.msunshine.data.IntentData;
 
 public class MSunshineSyncIntentService extends IntentService {
 
@@ -20,6 +20,6 @@ public class MSunshineSyncIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
-        MSunshineSyncTask.syncWeather(MSunshineSyncIntentService.this, intent.getStringExtra(ExplicitIntentData.STRING_CITY_NAME));
+        MSunshineSyncTask.syncWeather(MSunshineSyncIntentService.this, intent.getStringExtra(IntentData.STRING_CITY_NAME));
     }
 }

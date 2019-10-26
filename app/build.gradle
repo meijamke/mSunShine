@@ -19,6 +19,8 @@ android {
 }
 
 dependencies {
+    def futures_version = "1.0.0"
+
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
@@ -27,6 +29,7 @@ dependencies {
     implementation 'androidx.preference:preference:1.1.0'
     implementation 'androidx.annotation:annotation:1.1.0'
     implementation "androidx.work:work-runtime:2.2.0"
+    implementation "androidx.concurrent:concurrent-futures:$futures_version"
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
