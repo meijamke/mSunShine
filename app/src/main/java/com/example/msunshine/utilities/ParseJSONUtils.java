@@ -156,32 +156,32 @@ public class ParseJSONUtils {
             JSONObject dayForecast = forecast.getJSONObject(i);
 
             String date = dayForecast.getString(DATE).trim();
-            String dayOfWeek = dayForecast.getString(DAY_OF_WEEK);
-            String dayCondition = dayForecast.getString(DAY_WEATHER);
-            String nightCondition = dayForecast.getString(NIGHT_WEATHER);
-            String dayTemp = dayForecast.getString(DAY_TEMP);
-            String nightTemp = dayForecast.getString(NIGHT_TEMP);
-            String dayWindDirection = dayForecast.getString(DAY_WIND_DIRECTION);
-            String nightWindDirection = dayForecast.getString(NIGHT_WIND_DIRECTION);
-            String dayWindPower = dayForecast.getString(DAY_WIND_POWER);
-            String nightWindPower = dayForecast.getString(NIGHT_WIND_POWER);
+            String dayOfWeek = dayForecast.getString(DAY_OF_WEEK).trim();
+            String dayCondition = dayForecast.getString(DAY_WEATHER).trim();
+            String nightCondition = dayForecast.getString(NIGHT_WEATHER).trim();
+            String dayTemp = dayForecast.getString(DAY_TEMP).trim();
+            String nightTemp = dayForecast.getString(NIGHT_TEMP).trim();
+            String dayWindDirection = dayForecast.getString(DAY_WIND_DIRECTION).trim();
+            String nightWindDirection = dayForecast.getString(NIGHT_WIND_DIRECTION).trim();
+            String dayWindPower = dayForecast.getString(DAY_WIND_POWER).trim();
+            String nightWindPower = dayForecast.getString(NIGHT_WIND_POWER).trim();
 
             if (dataType == TYPE_WEATHER_SUMMARY)
                 parsedWeatherData[i] =
                         date + "\n" +
                                 NetworkData.getWeekName(context, dayOfWeek) + "\n" +
-                                NetworkData.getWeatherInfo(context, R.string.day_condition) + dayCondition + "\n" +
-                                NetworkData.getWeatherInfo(context, R.string.night_condition) + nightCondition + "\n" +
-                                NetworkData.getWeatherInfo(context, R.string.day_temp) + dayTemp + "\n" +
-                                NetworkData.getWeatherInfo(context, R.string.night_temp) + nightTemp;
+                                dayCondition + "\n" +
+                                nightCondition + "\n" +
+                                dayTemp + "\n" +
+                                nightTemp;
             else if (dataType == TYPE_WEATHER_DETAIL)
                 parsedWeatherData[i] =
                         date + "\n" +
                                 NetworkData.getWeekName(context, dayOfWeek) + "\n" +
-                                NetworkData.getWeatherInfo(context, R.string.day_condition) + dayCondition + "\n" +
-                                NetworkData.getWeatherInfo(context, R.string.night_condition) + nightCondition + "\n" +
-                                NetworkData.getWeatherInfo(context, R.string.day_temp) + dayTemp + "\n" +
-                                NetworkData.getWeatherInfo(context, R.string.night_temp) + nightTemp + "\n" +
+                                dayCondition + "\n" +
+                                nightCondition + "\n" +
+                                dayTemp + "\n" +
+                                nightTemp + "\n" +
                                 NetworkData.getWeatherInfo(context, R.string.day_wind_direction) + dayWindDirection + "\n" +
                                 NetworkData.getWeatherInfo(context, R.string.night_wind_direction) + nightWindDirection + "\n" +
                                 NetworkData.getWeatherInfo(context, R.string.day_wind_power) + dayWindPower + "\n" +

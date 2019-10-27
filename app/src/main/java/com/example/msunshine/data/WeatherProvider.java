@@ -54,7 +54,7 @@ public class WeatherProvider extends ContentProvider {
             case CODE_WEATHER_DATE:
                 cursor = db.query(WeatherContract.WeatherEntry.TABLE_NAME,
                         projection,
-                        WeatherContract.WeatherEntry.COLUMN_DATE + "=?",
+                        WeatherContract.WeatherEntry.COLUMN_DATE + " =? ",
                         new String[]{"'" + uri.getPathSegments().get(1) + "'"},
                         null,
                         null,
@@ -123,24 +123,25 @@ public class WeatherProvider extends ContentProvider {
 
         Uri uriInsert = null;
         final SQLiteDatabase db = mDbHelper.getWritableDatabase();
-
-        switch (mUriMatcher.match(uri)) {
-            case CODE_WEATHER:
-                assert values != null;
-                String date = (String) values.get(WeatherContract.WeatherEntry.COLUMN_DATE);
-                if (!(MSunshineDateUtils.isValidDate(date)))
-                    throw new IllegalArgumentException("Unsupported date format, date format should be \"yyyy/MM/dd\"");
-                long id = db.insert(WeatherContract.WeatherEntry.TABLE_NAME,
-                        null,
-                        values);
-                if (id != -1)
-                    uriInsert = WeatherContract.WeatherEntry.CONTENT_URI.buildUpon().appendPath(String.valueOf(id)).build();
-                break;
-            default:
-                break;
+        if (values != null) {
+            switch (mUriMatcher.match(uri)) {
+                case CODE_WEATHER:
+                    String date = values.getAsString(WeatherContract.WeatherEntry.COLUMN_DATE);
+                    if (!(MSunshineDateUtils.isValidDate(date)))
+                        throw new IllegalArgumentException("Unsupported date format, date format should be \"yyyy/MM/dd\"");
+                    long id = db.insert(WeatherContract.WeatherEntry.TABLE_NAME,
+                            null,
+                            values);
+                    if (id != -1)
+                        uriInsert = WeatherContract.WeatherEntry.CONTENT_URI.buildUpon().appendPath(String.valueOf(id)).build();
+                    break;
+                default:
+                    break;
+            }
         }
-        if (uriInsert != null)
+        if (uriInsert != null) {
             getContext().getContentResolver().notifyChange(uri, null);
+        }
 
         return uriInsert;
     }
@@ -169,8 +170,8 @@ public class WeatherProvider extends ContentProvider {
                 break;
             case CODE_WEATHER_DATE:
                 rowDeleted = db.delete(WeatherContract.WeatherEntry.TABLE_NAME,
-                        WeatherContract.WeatherEntry.COLUMN_DATE + "=?",
-                        new String[]{uri.getPathSegments().get(1)});
+                        WeatherContract.WeatherEntry.COLUMN_DATE + " =? ",
+                        new String[]{"'" + uri.getPathSegments().get(1) + "'"});
                 break;
             default:
                 break;
@@ -199,8 +200,8 @@ public class WeatherProvider extends ContentProvider {
             case CODE_WEATHER_DATE:
                 rowUpdated = db.update(WeatherContract.WeatherEntry.TABLE_NAME,
                         values,
-                        WeatherContract.WeatherEntry.COLUMN_DATE + "=?",
-                        new String[]{uri.getPathSegments().get(1)});
+                        WeatherContract.WeatherEntry.COLUMN_DATE + " =? ",
+                        new String[]{"'" + uri.getPathSegments().get(1) + "'"});
                 break;
             default:
                 break;

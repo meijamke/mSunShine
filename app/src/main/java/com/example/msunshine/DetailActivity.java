@@ -77,9 +77,9 @@ public class DetailActivity extends AppCompatActivity implements
             case ID_WEATHER_DETAIL_CURSOR:
                 return new CursorLoader(
                         this,
-                        WeatherContract.WeatherEntry.CONTENT_URI,
+                        WeatherContract.WeatherEntry.CONTENT_URI.buildUpon().appendPath(weatherDate).build(),
                         DETAIL_PROJECTION,
-                        WeatherContract.WeatherEntry.COLUMN_DATE + " = " + "'" + weatherDate + "'",
+                        null,
                         null,
                         null);
             default:

@@ -5,7 +5,7 @@ import com.example.msunshine.R;
 public class MSunshineWeatherUtils {
 
     public static int getSmallIcResIdForWeatherCondition(String weatherCondition) {
-        int resId = -1;
+        int resId = R.mipmap.ic_launcher;
         if (weatherCondition.equals("晴"))
             resId = R.drawable.ic_clear;
         if (weatherCondition.equals("阴"))
@@ -22,7 +22,7 @@ public class MSunshineWeatherUtils {
     }
 
     public static int getLargeArtResIdForWeatherCondition(String weatherCondition) {
-        int resId = -1;
+        int resId = R.mipmap.ic_launcher;
         if (weatherCondition.equals("晴"))
             resId = R.drawable.art_clear;
         if (weatherCondition.equals("阴"))

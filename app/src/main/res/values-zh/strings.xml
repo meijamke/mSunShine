@@ -28,5 +28,7 @@
     <string name="pref_notification_label">天气通知</string>
     <string name="pref_notification_off">关闭</string>
     <string name="pref_notification_on">打开</string>
+    <string name="setting">设置</string>
+    <string name="detail">详细天气</string>
 
 </resources>

@@ -45,7 +45,8 @@ public class MSunshineSyncUtils {
                 );
                 if (mCursor == null || mCursor.getCount() == 0)
                     startImmediateSync(context, city);
-                mCursor.close();
+                else
+                    mCursor.close();
             }
         }).start();
     }

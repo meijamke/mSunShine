@@ -28,7 +28,8 @@ public class SettingFragment extends PreferenceFragmentCompat implements
             Preference pref = prefScreen.getPreference(i);
             if (!(pref instanceof CheckBoxPreference)) {
                 String value = sharedPreferences.getString(pref.getKey(), "");
-                setPreferenceSummary(pref, value);
+                if (value != null)
+                    setPreferenceSummary(pref, value);
             }
         }
 
@@ -44,13 +45,14 @@ public class SettingFragment extends PreferenceFragmentCompat implements
      * @param newValues  value of preference
      **/
     private void setPreferenceSummary(Preference preference, Object newValues) {
+        String values = newValues.toString();
         if (preference instanceof ListPreference) {
             ListPreference listPreference = (ListPreference) preference;
-            int index = listPreference.findIndexOfValue(newValues.toString());
+            int index = listPreference.findIndexOfValue(values);
             if (index >= 0)
                 listPreference.setSummary(listPreference.getEntries()[index]);
         } else
-            preference.setSummary(newValues.toString());
+            preference.setSummary(values);
     }
 
     /**
@@ -64,8 +66,10 @@ public class SettingFragment extends PreferenceFragmentCompat implements
         Preference preference = findPreference(key);
         String value = sharedPreferences.getString(key, "");
         if (preference != null)
-            if (!(preference instanceof CheckBoxPreference))
-                setPreferenceSummary(preference, value);
+            if (!(preference instanceof CheckBoxPreference)) {
+                if (value != null)
+                    setPreferenceSummary(preference, value);
+            }
     }
 
     /***

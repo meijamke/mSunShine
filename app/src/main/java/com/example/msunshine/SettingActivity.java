@@ -18,7 +18,6 @@ public class SettingActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeButtonEnabled(true);
-            actionBar.setDisplayShowHomeEnabled(true);
         }
     }
 

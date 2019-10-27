@@ -39,4 +39,9 @@ public class MSunshineDateUtils {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         return dateFormat.format(Calendar.getInstance().getTime());
     }
+
+    public static int getNormalizedHourNow() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("HH", Locale.getDefault());
+        return Integer.parseInt(dateFormat.format(Calendar.getInstance().getTime()));
+    }
 }

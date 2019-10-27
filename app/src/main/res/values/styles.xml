@@ -6,7 +6,9 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <!--preference setting theme -->
         <item name="android:preferenceStyle">@style/PreferenceThemeOverlay</item>
+
     </style>
 
 </resources>
