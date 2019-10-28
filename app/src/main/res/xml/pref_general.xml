@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<androidx.preference.PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
     <EditTextPreference
         app:defaultValue="@string/pref_city_default"
         app:key="@string/pref_city_key"
         app:title="@string/pref_city_label"
-        android:hint="@string/edit_hint"
+        app:icon="@drawable/art_edit_location_orange_24dp"
         app:useSimpleSummaryProvider="true" />
 
     <ListPreference
@@ -14,10 +13,12 @@
         app:entryValues="@array/pref_temp_units_values"
         app:key="@string/pref_temp_units_key"
         app:title="@string/pref_temp_units_label"
+        app:icon="@drawable/art_transform_orange_24dp"
         app:useSimpleSummaryProvider="true" />
 
     <SwitchPreferenceCompat
         app:defaultValue="@bool/pref_notification_default"
         app:key="@string/pref_notification_key"
+        app:icon="@drawable/art_notifications_orange_24dp"
         app:title="@string/pref_notification_label" />
 </androidx.preference.PreferenceScreen>
