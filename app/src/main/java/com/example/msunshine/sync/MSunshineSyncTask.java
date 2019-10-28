@@ -29,7 +29,9 @@ class MSunshineSyncTask {
                     null,
                     null);
             if (weatherValues != null && weatherValues.length != 0)
-                resolver.bulkInsert(WeatherContract.WeatherEntry.CONTENT_URI, weatherValues);
+                resolver.bulkInsert(
+                        WeatherContract.WeatherEntry.CONTENT_URI,
+                        weatherValues);
 
             if (MSunshinePreference.getPreferredWeatherNotification(context) &&
                     MSunshinePreference.overOneDaySinceLastNotificationTime(context))

@@ -61,7 +61,7 @@ public class DetailActivity extends AppCompatActivity implements
 
         mWeatherDetailTextView = findViewById(R.id.detail_text_view);
 
-        weatherDate = getIntent().getStringExtra(IntentData.STRING_CITY_NAME);
+        weatherDate = getIntent().getStringExtra(IntentData.STRING_WEATHER_DATE);
         if (weatherDate == null)
             throw new NullPointerException("String date for detailActivity cannot be null");
 
@@ -77,10 +77,10 @@ public class DetailActivity extends AppCompatActivity implements
             case ID_WEATHER_DETAIL_CURSOR:
                 return new CursorLoader(
                         this,
-                        WeatherContract.WeatherEntry.CONTENT_URI.buildUpon().appendPath(weatherDate).build(),
+                        WeatherContract.WeatherEntry.CONTENT_URI,
                         DETAIL_PROJECTION,
-                        null,
-                        null,
+                        WeatherContract.WeatherEntry.COLUMN_DATE + " =? ",
+                        new String[]{weatherDate},
                         null);
             default:
                 throw new RuntimeException("Unknown loader ID :" + id);

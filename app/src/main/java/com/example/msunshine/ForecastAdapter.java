@@ -21,9 +21,14 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
     private Cursor mCursor;
     private OnClickListItemListener mItemListener;
 
+    private static final int TYPE_TODAY = 0;
+    private static final int TYPE_FUTURE_DAY = 1;
+    private boolean mUseTodayLayout;
+
     ForecastAdapter(Context context, OnClickListItemListener onClickListItemListener) {
         mContext = context;
         mItemListener = onClickListItemListener;
+        mUseTodayLayout = context.getResources().getBoolean(R.bool.use_today_layout);
     }
 
     public interface OnClickListItemListener {
@@ -46,22 +51,42 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
         String nightTemperature = mCursor.getString(MainActivity.INDEX_WEATHER_NIGHT_TEMP);
         String nightTemp = MSunshinePreference.formatTemperature(mContext, nightTemperature);
 
+        int viewType = getItemViewType(position);
         int weatherIcon;
         String weatherCondition;
         if (MSunshineDateUtils.getNormalizedHourNow() >= mContext.getResources().getInteger(R.integer.hour_between_night_and_day) &&
                 MSunshineDateUtils.getNormalizedHourNow() <= mContext.getResources().getInteger(R.integer.hour_between_day_and_night)) {
-            weatherIcon = MSunshineWeatherUtils.getSmallIcResIdForWeatherCondition(dayCondition);
+            switch (viewType) {
+                case TYPE_TODAY:
+                    weatherIcon = MSunshineWeatherUtils.getLargeArtResIdForWeatherCondition(dayCondition);
+                    break;
+                case TYPE_FUTURE_DAY:
+                    weatherIcon = MSunshineWeatherUtils.getSmallIcResIdForWeatherCondition(dayCondition);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unknown view type ");
+            }
             weatherCondition = dayCondition;
         } else {
-            weatherIcon = MSunshineWeatherUtils.getSmallIcResIdForWeatherCondition(nightCondition);
+            switch (viewType) {
+                case TYPE_TODAY:
+                    weatherIcon = MSunshineWeatherUtils.getLargeArtResIdForWeatherCondition(dayCondition);
+                    break;
+                case TYPE_FUTURE_DAY:
+                    weatherIcon = MSunshineWeatherUtils.getSmallIcResIdForWeatherCondition(dayCondition);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unknown view type ");
+            }
             weatherCondition = nightCondition;
         }
+
         holder.mWeatherIcon.setImageResource(weatherIcon);
         holder.mWeatherDate.setText(date);
         holder.mWeatherDescription.setText(weatherCondition);
         holder.mWeatherWeek.setText(week);
-        holder.mWeatherLowTemperature.setText(dayTemp);
-        holder.mWeatherHighTemperature.setText(nightTemp);
+        holder.mWeatherLowTemperature.setText(nightTemp);
+        holder.mWeatherHighTemperature.setText(dayTemp);
 
     }
 
@@ -69,7 +94,19 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
     @Override
     public ForecastAdapterViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
-        View view = inflater.inflate(R.layout.forecast_list_item, viewGroup, false);
+
+        int layoutId;
+        switch (viewType) {
+            case TYPE_TODAY:
+                layoutId = R.layout.forecast_list_item_today;
+                break;
+            case TYPE_FUTURE_DAY:
+                layoutId = R.layout.forecast_list_item;
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown view type ");
+        }
+        View view = inflater.inflate(layoutId, viewGroup, false);
         return new ForecastAdapterViewHolder(view);
     }
 
@@ -107,6 +144,14 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
         if (mCursor != null)
             return mCursor.getCount();
         return 0;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (mUseTodayLayout && position == 0)
+            return TYPE_TODAY;
+        else
+            return TYPE_FUTURE_DAY;
     }
 
     void setWeatherData(Cursor weatherData) {

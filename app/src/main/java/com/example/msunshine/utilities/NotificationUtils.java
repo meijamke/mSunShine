@@ -38,10 +38,10 @@ public class NotificationUtils {
         String today = MSunshineDateUtils.getNormalizedDayNow();
 
         Cursor mCursor = context.getContentResolver().query(
-                WeatherContract.WeatherEntry.CONTENT_URI.buildUpon().appendPath(today).build(),
+                WeatherContract.WeatherEntry.CONTENT_URI,
                 NOTIFICATION_PROJECTION,
-                null,
-                null,
+                WeatherContract.WeatherEntry.COLUMN_DATE + " =? ",
+                new String[]{today},
                 null);
         if (mCursor != null && mCursor.moveToFirst()) {
 
@@ -51,26 +51,23 @@ public class NotificationUtils {
             String nightTemp = MSunshinePreference.formatTemperature(context, mCursor.getString(INDEX_WEATHER_NIGHT_TEMP));
 
             int smallDayIcResId;
-            int largeDayArtResId;
             String notificationText;
             if (MSunshineDateUtils.getNormalizedHourNow() >= context.getResources().getInteger(R.integer.hour_between_night_and_day) &&
                     MSunshineDateUtils.getNormalizedHourNow() <= context.getResources().getInteger(R.integer.hour_between_day_and_night)) {
                 smallDayIcResId = MSunshineWeatherUtils.getSmallIcResIdForWeatherCondition(dayCondition);
-                largeDayArtResId = MSunshineWeatherUtils.getLargeArtResIdForWeatherCondition(dayCondition);
                 notificationText = String.format("%s\n%s-%s",
                         dayCondition, dayTemp, nightTemp);
             } else {
                 smallDayIcResId = MSunshineWeatherUtils.getSmallIcResIdForWeatherCondition(nightCondition);
-                largeDayArtResId = MSunshineWeatherUtils.getLargeArtResIdForWeatherCondition(nightCondition);
                 notificationText = String.format("%s\n%s-%s",
                         nightCondition, dayTemp, nightTemp);
             }
-            Bitmap largeIconBitmap = BitmapFactory.decodeResource(context.getResources(), largeDayArtResId);
+            Bitmap largeIconBitmap = BitmapFactory.decodeResource(context.getResources(), smallDayIcResId);
 
             String notificationTitle = context.getString(R.string.app_name);
 
             Intent intent = new Intent(context, DetailActivity.class);
-            intent.putExtra(IntentData.STRING_CITY_NAME, today);
+            intent.putExtra(IntentData.STRING_WEATHER_DATE, today);
 
             TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
             taskStackBuilder.addNextIntentWithParentStack(intent);
@@ -83,6 +80,7 @@ public class NotificationUtils {
                     .setLargeIcon(largeIconBitmap)
                     .setContentIntent(pendingIntent)
                     .setAutoCancel(true)
+                    .setWhen(System.currentTimeMillis())
                     .build();
 
             NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);

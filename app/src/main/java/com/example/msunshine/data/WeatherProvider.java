@@ -54,8 +54,8 @@ public class WeatherProvider extends ContentProvider {
             case CODE_WEATHER_DATE:
                 cursor = db.query(WeatherContract.WeatherEntry.TABLE_NAME,
                         projection,
-                        WeatherContract.WeatherEntry.COLUMN_DATE + " =? ",
-                        new String[]{"'" + uri.getPathSegments().get(1) + "'"},
+                        WeatherContract.WeatherEntry.COLUMN_DATE + " = " + "'" + uri.getPathSegments().get(1) + "'",
+                        null,
                         null,
                         null,
                         sortOrder);
@@ -170,8 +170,8 @@ public class WeatherProvider extends ContentProvider {
                 break;
             case CODE_WEATHER_DATE:
                 rowDeleted = db.delete(WeatherContract.WeatherEntry.TABLE_NAME,
-                        WeatherContract.WeatherEntry.COLUMN_DATE + " =? ",
-                        new String[]{"'" + uri.getPathSegments().get(1) + "'"});
+                        WeatherContract.WeatherEntry.COLUMN_DATE + " = " + "'" + uri.getPathSegments().get(1) + "'",
+                        null);
                 break;
             default:
                 break;
@@ -200,8 +200,8 @@ public class WeatherProvider extends ContentProvider {
             case CODE_WEATHER_DATE:
                 rowUpdated = db.update(WeatherContract.WeatherEntry.TABLE_NAME,
                         values,
-                        WeatherContract.WeatherEntry.COLUMN_DATE + " =? ",
-                        new String[]{"'" + uri.getPathSegments().get(1) + "'"});
+                        WeatherContract.WeatherEntry.COLUMN_DATE + " = " + "'" + uri.getPathSegments().get(1) + "'",
+                        null);
                 break;
             default:
                 break;

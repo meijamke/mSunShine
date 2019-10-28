@@ -13,7 +13,11 @@ public class SettingActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
-
+//        动态添加preferenceFragment，会崩溃（API19）
+//        getSupportFragmentManager()
+//                .beginTransaction()
+//                .replace(R.id.pref_weather_setting,new SettingFragment())
+//                .commit();
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);

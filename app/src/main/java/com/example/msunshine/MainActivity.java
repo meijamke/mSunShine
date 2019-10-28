@@ -14,7 +14,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.CursorLoader;
@@ -55,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements
     private ForecastAdapter mForecastAdapter;
     private EditText mSearchCity;
     private TextView mErrorMsgDisplay;
-    private ProgressBar mSearchProgressBar;
+    private ProgressBar mLoadingIndicator;
 
     private static boolean pref_edit_text_flag = false;
 
@@ -63,9 +62,9 @@ public class MainActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null)
-            actionBar.setElevation(0f);
+//        ActionBar actionBar = getSupportActionBar();
+//        if (actionBar != null)
+//            actionBar.setElevation(0f);
 
         mRecyclerView = findViewById(R.id.rv_forecast);
         mForecastAdapter = new ForecastAdapter(this, this);
@@ -77,10 +76,12 @@ public class MainActivity extends AppCompatActivity implements
 
         mSearchCity = findViewById(R.id.et_search);
         mErrorMsgDisplay = findViewById(R.id.tv_error_message);
-        mSearchProgressBar = findViewById(R.id.pb_search_progress);
+        mLoadingIndicator = findViewById(R.id.pb_search_progress);
 
         PreferenceManager.getDefaultSharedPreferences(this)
                 .registerOnSharedPreferenceChangeListener(this);
+
+        showLoading();
 
         //启动APP时根据 偏好设置的数值 初始化
         getSupportLoaderManager().initLoader(ID_WEATHER_CURSOR, null, this);
@@ -156,11 +157,19 @@ public class MainActivity extends AppCompatActivity implements
     public void showWeatherData() {
         mRecyclerView.setVisibility(View.VISIBLE);
         mErrorMsgDisplay.setVisibility(View.INVISIBLE);
+        mLoadingIndicator.setVisibility(View.INVISIBLE);
     }
 
     public void showErrorMessage() {
-        mRecyclerView.setVisibility(View.INVISIBLE);
         mErrorMsgDisplay.setVisibility(View.VISIBLE);
+        mRecyclerView.setVisibility(View.INVISIBLE);
+        mLoadingIndicator.setVisibility(View.INVISIBLE);
+    }
+
+    public void showLoading() {
+        mLoadingIndicator.setVisibility(View.VISIBLE);
+        mRecyclerView.setVisibility(View.INVISIBLE);
+        mErrorMsgDisplay.setVisibility(View.INVISIBLE);
     }
 
     /**
@@ -170,9 +179,6 @@ public class MainActivity extends AppCompatActivity implements
     @NonNull
     @Override
     public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle bundle) {
-
-        mSearchProgressBar.setVisibility(View.VISIBLE);
-
 
         switch (id) {
             case ID_WEATHER_CURSOR:
@@ -195,7 +201,6 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor cursor) {
 
-        mSearchProgressBar.setVisibility(View.INVISIBLE);
         mForecastAdapter.setWeatherData(cursor);
         if (cursor != null) {
             showWeatherData();

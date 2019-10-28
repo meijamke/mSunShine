@@ -1,25 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <EditTextPreference
-        android:key="@string/pref_city_key"
-        android:defaultValue="@string/pref_city_default"
-        android:title="@string/pref_city_label"
-        android:inputType="text"
-        android:singleLine="true"
+        app:defaultValue="@string/pref_city_default"
+        app:key="@string/pref_city_key"
+        app:title="@string/pref_city_label"
         android:hint="@string/edit_hint"
-        android:textSize="20sp" />
+        app:useSimpleSummaryProvider="true" />
 
     <ListPreference
-        android:key="@string/pref_temp_units_key"
-        android:defaultValue="@string/pref_temp_units_default"
-        android:title="@string/pref_temp_units_label"
-        android:entries="@array/pref_temp_units_options"
-        android:entryValues="@array/pref_temp_units_values" />
+        app:defaultValue="@string/pref_temp_units_default"
+        app:entries="@array/pref_temp_units_options"
+        app:entryValues="@array/pref_temp_units_values"
+        app:key="@string/pref_temp_units_key"
+        app:title="@string/pref_temp_units_label"
+        app:useSimpleSummaryProvider="true" />
 
-    <CheckBoxPreference
-        android:defaultValue="@bool/pref_notification_default"
-        android:key="@string/pref_notification_key"
-        android:summaryOff="@string/pref_notification_off"
-        android:summaryOn="@string/pref_notification_on"
-        android:title="@string/pref_notification_label" />
-</PreferenceScreen>
+    <SwitchPreferenceCompat
+        app:defaultValue="@bool/pref_notification_default"
+        app:key="@string/pref_notification_key"
+        app:title="@string/pref_notification_label" />
+</androidx.preference.PreferenceScreen>
