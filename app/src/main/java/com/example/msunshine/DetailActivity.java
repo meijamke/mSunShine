@@ -5,27 +5,32 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ShareCompat;
+import androidx.databinding.DataBindingUtil;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
 
 import com.example.msunshine.data.IntentData;
 import com.example.msunshine.data.MSunshinePreference;
+import com.example.msunshine.data.NetworkData;
 import com.example.msunshine.data.WeatherContract;
+import com.example.msunshine.databinding.ActivityDetailBinding;
 import com.example.msunshine.utilities.ExplicitIntentActivityUtils;
+import com.example.msunshine.utilities.MSunshineDateUtils;
+import com.example.msunshine.utilities.MSunshineWeatherUtils;
 
 public class DetailActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor> {
 
+    private ActivityDetailBinding mDetailBinding;
+
     private String weatherDate;
     private String weatherString;
-    private TextView mWeatherDetailTextView;
 
     private static final int ID_WEATHER_DETAIL_CURSOR = 2;
 
@@ -57,9 +62,7 @@ public class DetailActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_weather_detail);
-
-        mWeatherDetailTextView = findViewById(R.id.detail_text_view);
+        mDetailBinding = DataBindingUtil.setContentView(this, R.layout.activity_detail);
 
         weatherDate = getIntent().getStringExtra(IntentData.STRING_WEATHER_DATE);
         if (weatherDate == null)
@@ -93,30 +96,45 @@ public class DetailActivity extends AppCompatActivity implements
 
         if (!(cursor != null && cursor.moveToFirst()))
             return;
+        String dayCondition = cursor.getString(DetailActivity.INDEX_WEATHER_DAY_CONDITION);
+        String nightCondition = cursor.getString(DetailActivity.INDEX_WEATHER_NIGHT_CONDITION);
+        String dayTemperature = MSunshinePreference.formatTemperature(this, cursor.getString(DetailActivity.INDEX_WEATHER_DAY_TEMP));
+        String nightTemperature = MSunshinePreference.formatTemperature(this, cursor.getString(DetailActivity.INDEX_WEATHER_NIGHT_TEMP));
 
-        String dayTemperature = cursor.getString(DetailActivity.INDEX_WEATHER_DAY_TEMP);
-        String nightTemperature = cursor.getString(DetailActivity.INDEX_WEATHER_NIGHT_TEMP);
+        int weatherIcon;
+        String weatherCondition;
+        if (MSunshineDateUtils.getNormalizedHourNow() >= getResources().getInteger(R.integer.hour_between_night_and_day) &&
+                MSunshineDateUtils.getNormalizedHourNow() <= getResources().getInteger(R.integer.hour_between_day_and_night)) {
 
-        weatherString = cursor.getString(DetailActivity.INDEX_WEATHER_DATE) +
-                "\n" +
-                cursor.getString(DetailActivity.INDEX_WEATHER_WEEK) +
-                "\n" +
-                cursor.getString(DetailActivity.INDEX_WEATHER_DAY_CONDITION) +
-                "\n" +
-                cursor.getString(DetailActivity.INDEX_WEATHER_NIGHT_CONDITION) +
-                "\n" +
-                MSunshinePreference.formatTemperature(this, dayTemperature) +
-                "\n" +
-                MSunshinePreference.formatTemperature(this, nightTemperature) +
-                "\n" +
-                cursor.getString(DetailActivity.INDEX_WEATHER_DAY_WIND_DIRECTION) +
-                "\n" +
-                cursor.getString(DetailActivity.INDEX_WEATHER_NIGHT_WIND_DIRECTION) +
-                "\n" +
-                cursor.getString(DetailActivity.INDEX_WEATHER_DAY_WIND_POWER) +
-                "\n" +
-                cursor.getString(DetailActivity.INDEX_WEATHER_NIGHT_WIND_POWER);
-        mWeatherDetailTextView.setText(weatherString);
+            weatherIcon = MSunshineWeatherUtils.getLargeArtResIdForWeatherCondition(dayCondition);
+            weatherCondition = dayCondition;
+        } else {
+            weatherIcon = MSunshineWeatherUtils.getLargeArtResIdForWeatherCondition(dayCondition);
+            weatherCondition = nightCondition;
+        }
+        String date = cursor.getString(DetailActivity.INDEX_WEATHER_DATE);
+        mDetailBinding.weatherPrimary.weatherIcon.setImageResource(weatherIcon);
+        mDetailBinding.weatherPrimary.weatherDate.setText(date);
+        mDetailBinding.weatherPrimary.weatherWeek.setText(cursor.getString(DetailActivity.INDEX_WEATHER_WEEK));
+        mDetailBinding.weatherPrimary.weatherDescription.setText(weatherCondition);
+        mDetailBinding.weatherPrimary.weatherHighTemperature.setText(dayTemperature);
+        mDetailBinding.weatherPrimary.weatherLowTemperature.setText(nightTemperature);
+
+
+        mDetailBinding.weatherDetail.dayWindDirectLabel.setText(NetworkData.getWeatherInfo(this, R.string.day_wind_direction));
+        mDetailBinding.weatherDetail.dayWindDirect.setText(cursor.getString(DetailActivity.INDEX_WEATHER_DAY_WIND_DIRECTION));
+
+        mDetailBinding.weatherDetail.nightWindDirectLabel.setText(NetworkData.getWeatherInfo(this, R.string.night_wind_direction));
+        mDetailBinding.weatherDetail.nightWindDirect.setText(cursor.getString(DetailActivity.INDEX_WEATHER_NIGHT_WIND_DIRECTION));
+
+        mDetailBinding.weatherDetail.dayWindPowerLabel.setText(NetworkData.getWeatherInfo(this, R.string.day_wind_power));
+        mDetailBinding.weatherDetail.dayWindPower.setText(cursor.getString(DetailActivity.INDEX_WEATHER_DAY_WIND_POWER));
+
+        mDetailBinding.weatherDetail.nightWindPowerLabel.setText(NetworkData.getWeatherInfo(this, R.string.night_wind_power));
+        mDetailBinding.weatherDetail.nightWindPower.setText(cursor.getString(DetailActivity.INDEX_WEATHER_NIGHT_WIND_POWER));
+
+        weatherString = String.format("%s - %s\n%s - %s",
+                date, weatherCondition, dayTemperature, nightTemperature);
     }
 
     @Override

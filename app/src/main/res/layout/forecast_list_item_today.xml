@@ -18,7 +18,7 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.5" />
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/weather_icon"
         android:layout_width="96dp"
         android:layout_height="96dp"
@@ -29,7 +29,7 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@drawable/ic_clear" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/weather_week"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -40,7 +40,7 @@
         app:layout_constraintStart_toStartOf="parent"
         tools:text="Sunday" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/weather_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -50,7 +50,7 @@
         app:layout_constraintStart_toStartOf="@+id/weather_week"
         tools:text="Today, October 27" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/weather_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -61,7 +61,7 @@
         app:layout_constraintTop_toBottomOf="@+id/weather_icon"
         tools:text="Sunny" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/weather_high_temperature"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -72,7 +72,7 @@
         app:layout_constraintTop_toTopOf="@+id/weather_icon"
         tools:text="27℃" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/weather_low_temperature"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

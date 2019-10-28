@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingStart="16dp"
+        android:paddingLeft="16dp"
+        android:paddingTop="12dp"
+        android:paddingEnd="16dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="12dp">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/horizontal_middle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/day_wind_direct_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.125"
+            tools:text="day wind direct" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/night_wind_direct_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.375"
+            tools:text="night wind direct" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/day_wind_power_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.625"
+            tools:text="day wind power" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/night_wind_power_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.875"
+            tools:text="night wind power" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/day_wind_direct"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="@+id/day_wind_direct_label"
+            app:layout_constraintStart_toStartOf="@+id/horizontal_middle"
+            tools:text="no wind" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/night_wind_direct"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="@+id/night_wind_direct_label"
+            app:layout_constraintStart_toStartOf="@+id/horizontal_middle"
+            tools:text="no wind" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/day_wind_power"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="@+id/day_wind_power_label"
+            app:layout_constraintStart_toStartOf="@+id/horizontal_middle"
+            tools:text="3 level" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/night_wind_power"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="@+id/night_wind_power_label"
+            app:layout_constraintStart_toStartOf="@+id/horizontal_middle"
+            tools:text="3 level" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

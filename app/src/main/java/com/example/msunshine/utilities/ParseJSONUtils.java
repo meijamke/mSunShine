@@ -3,7 +3,6 @@ package com.example.msunshine.utilities;
 
 import android.content.Context;
 
-import com.example.msunshine.R;
 import com.example.msunshine.data.NetworkData;
 
 import org.json.JSONArray;
@@ -182,10 +181,10 @@ public class ParseJSONUtils {
                                 nightCondition + "\n" +
                                 dayTemp + "\n" +
                                 nightTemp + "\n" +
-                                NetworkData.getWeatherInfo(context, R.string.day_wind_direction) + dayWindDirection + "\n" +
-                                NetworkData.getWeatherInfo(context, R.string.night_wind_direction) + nightWindDirection + "\n" +
-                                NetworkData.getWeatherInfo(context, R.string.day_wind_power) + dayWindPower + "\n" +
-                                NetworkData.getWeatherInfo(context, R.string.night_wind_power) + nightWindPower;
+                                dayWindDirection + "\n" +
+                                nightWindDirection + "\n" +
+                                dayWindPower + "\n" +
+                                nightWindPower;
         }
         return parsedWeatherData;
     }
