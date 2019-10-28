@@ -4,12 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingStart="16dp"
-    android:paddingLeft="16dp"
-    android:paddingTop="12dp"
-    android:paddingEnd="16dp"
-    android:paddingRight="16dp"
-    android:paddingBottom="12dp">
+    android:background="@color/colorPrimary"
+    android:paddingStart="@dimen/list_item_padding_horizontal"
+    android:paddingLeft="@dimen/list_item_padding_horizontal"
+    android:paddingTop="@dimen/list_item_padding_vertical"
+    android:paddingEnd="@dimen/list_item_padding_horizontal"
+    android:paddingRight="@dimen/list_item_padding_horizontal"
+    android:paddingBottom="@dimen/list_item_padding_vertical">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/horizontal_middle"
@@ -20,8 +21,8 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/weather_icon"
-        android:layout_width="96dp"
-        android:layout_height="96dp"
+        android:layout_width="@dimen/today_icon"
+        android:layout_height="@dimen/today_icon"
         android:adjustViewBounds="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/horizontal_middle"
@@ -33,21 +34,25 @@
         android:id="@+id/weather_week"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/weather_icon"
+        android:textColor="@color/white"
+        android:textSize="@dimen/list_item_today_text_size"
+        app:fontFamily="sans-serif"
+        app:layout_constraintBottom_toBottomOf="@+id/weather_date"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/horizontal_middle"
+        app:layout_constraintTop_toTopOf="@+id/weather_date"
         tools:text="Sunday" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/weather_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/weather_week"
-        app:layout_constraintEnd_toEndOf="@+id/weather_week"
-        app:layout_constraintStart_toStartOf="@+id/weather_week"
+        android:textColor="@color/white"
+        android:textSize="@dimen/list_item_today_text_size"
+        app:fontFamily="sans-serif"
+        app:layout_constraintBottom_toTopOf="@+id/weather_icon"
+        app:layout_constraintEnd_toStartOf="@+id/horizontal_middle"
+        app:layout_constraintStart_toStartOf="parent"
         tools:text="Today, October 27" />
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -55,7 +60,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:textSize="20sp"
+        android:textColor="@color/white"
+        android:textSize="@dimen/list_item_today_text_size"
         app:layout_constraintEnd_toEndOf="@+id/weather_icon"
         app:layout_constraintStart_toStartOf="@+id/weather_icon"
         app:layout_constraintTop_toBottomOf="@+id/weather_icon"
@@ -66,6 +72,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="72sp"
+        android:textColor="@color/white"
+        app:fontFamily="sans-serif-light"
         app:layout_constraintBottom_toBottomOf="@+id/weather_icon"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/horizontal_middle"
@@ -77,6 +85,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="36sp"
+        android:textColor="@color/white"
+        app:fontFamily="sans-serif-light"
         app:layout_constraintBaseline_toBaselineOf="@+id/weather_description"
         app:layout_constraintEnd_toEndOf="@+id/weather_high_temperature"
         app:layout_constraintStart_toStartOf="@+id/weather_high_temperature"

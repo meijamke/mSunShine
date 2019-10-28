@@ -10,16 +10,17 @@
         android:layout_height="wrap_content"
         android:textEditPasteWindowLayout="@android:anim/bounce_interpolator"
         android:id="@+id/et_search"
-        android:textSize="22sp"
+        android:background="@color/colorPrimaryLight"
         android:hint="@string/edit_hint"
         android:autofillHints="@string/edit_hint"
         android:inputType="textAutoComplete|textImeMultiLine"
+        android:textSize="@dimen/search_edit_text_size"
         tools:ignore="UnusedAttribute" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="54dp"
+        android:layout_marginTop="39dp"
         android:id="@+id/rv_forecast">
 
     </androidx.recyclerview.widget.RecyclerView>
@@ -29,14 +30,14 @@
         android:layout_height="wrap_content"
         android:id="@+id/tv_error_message"
         android:text="@string/error_message"
-        android:textSize="22sp"
-        android:padding="16dp"
-        android:layout_marginTop="54dp"
+        android:layout_marginTop="39dp"
+        android:padding="@dimen/error_text_view_padding"
+        android:textSize="@dimen/error_text_size"
         android:visibility="invisible" />
 
     <ProgressBar
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="@dimen/loading_indicator_size"
+        android:layout_height="@dimen/loading_indicator_size"
         android:id="@+id/pb_search_progress"
         android:layout_gravity="center"
         android:visibility="invisible" />
