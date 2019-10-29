@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="weather_detail_horizontal_padding">16dp</dimen>
+    <dimen name="weather_detail_vertical_padding">44dp</dimen>
+    <dimen name="weather_detail_text_size">18sp</dimen>
+    <dimen name="weather_primary_horizontal_padding">16dp</dimen>
+    <dimen name="weather_primary_vertical_padding">12dp</dimen>
+    <dimen name="weather_primary_text_size">20sp</dimen>
+    <dimen name="today_icon">96dp</dimen>
+    <dimen name="future_icon">40dp</dimen>
+    <dimen name="weather_text_size">28sp</dimen>
+    <dimen name="weather_temperature_space">4dp</dimen>
+
+    <dimen name="list_item_icon_margin_right">24dp</dimen>
+    <dimen name="list_item_icon_margin_end">@dimen/list_item_icon_margin_right</dimen>
+    <dimen name="list_item_date_margin_left">16dp</dimen>
+    <dimen name="list_item_date_margin_start">@dimen/list_item_date_margin_left</dimen>
+    <dimen name="list_item_high_temperature_margin_right">12dp</dimen>
+    <dimen name="list_item_high_temperature_margin_end">
+        @dimen/list_item_high_temperature_margin_right
+    </dimen>
+    <dimen name="list_item_low_temperature_text_view_size">48dp</dimen>
+    <dimen name="list_item_padding_vertical">12dp</dimen>
+    <dimen name="list_item_padding_horizontal">16dp</dimen>
+    <dimen name="list_item_text_size">18sp</dimen>
+    <dimen name="list_item_temperature_text_size">28sp</dimen>
+    <dimen name="list_item_today_text_size">20sp</dimen>
+
+    <dimen name="search_edit_text_size">28sp</dimen>
+    <dimen name="error_text_size">22sp</dimen>
+    <dimen name="error_text_view_padding">16dp</dimen>
+    <dimen name="loading_indicator_size">50dp</dimen>
+
+</resources>
