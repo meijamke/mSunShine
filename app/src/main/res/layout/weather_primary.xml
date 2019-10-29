@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.constraintlayout.widget.ConstraintLayout style="@style/TodayConstraintLayout">
+    <androidx.constraintlayout.widget.ConstraintLayout style="@style/ItemAndTodayConstraintLayout">
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/horizontal_middle"
