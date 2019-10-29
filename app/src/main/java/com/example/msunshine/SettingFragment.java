@@ -1,10 +1,11 @@
 package com.example.msunshine;
 
 import android.os.Bundle;
-import android.widget.Toast;
 
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
+
+import com.example.msunshine.utilities.DataFormatUtils;
 
 public class SettingFragment extends PreferenceFragmentCompat implements
         Preference.OnPreferenceChangeListener {
@@ -36,13 +37,7 @@ public class SettingFragment extends PreferenceFragmentCompat implements
         String key = preference.getKey();
         if (getString(R.string.pref_city_key).equals(key)) {
             String value = ((String) newValues).trim();
-            //判断是否为汉字
-            char[] chars = value.toCharArray();
-            for (char ch : chars)
-                if (ch < 0x4e00 || ch > 0x9fa5) {
-                    Toast.makeText(getContext(), getString(R.string.edit_hint), Toast.LENGTH_LONG).show();
-                    return false;
-                }
+            return DataFormatUtils.isChinese(getContext(), value);
         }
         return true;
     }

@@ -17,12 +17,12 @@ import androidx.loader.content.Loader;
 
 import com.example.msunshine.data.IntentData;
 import com.example.msunshine.data.MSunshinePreference;
-import com.example.msunshine.data.NetworkData;
+import com.example.msunshine.data.ParseWeatherData;
 import com.example.msunshine.data.WeatherContract;
 import com.example.msunshine.databinding.ActivityDetailBinding;
+import com.example.msunshine.utilities.DateUtils;
 import com.example.msunshine.utilities.ExplicitIntentActivityUtils;
-import com.example.msunshine.utilities.MSunshineDateUtils;
-import com.example.msunshine.utilities.MSunshineWeatherUtils;
+import com.example.msunshine.utilities.WeatherImageUtils;
 
 public class DetailActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor> {
@@ -103,13 +103,13 @@ public class DetailActivity extends AppCompatActivity implements
 
         int weatherIcon;
         String weatherCondition;
-        if (MSunshineDateUtils.getNormalizedHourNow() >= getResources().getInteger(R.integer.hour_between_night_and_day) &&
-                MSunshineDateUtils.getNormalizedHourNow() <= getResources().getInteger(R.integer.hour_between_day_and_night)) {
+        if (DateUtils.getNormalizedHourNow() >= getResources().getInteger(R.integer.hour_between_night_and_day) &&
+                DateUtils.getNormalizedHourNow() <= getResources().getInteger(R.integer.hour_between_day_and_night)) {
 
-            weatherIcon = MSunshineWeatherUtils.getLargeArtResIdForWeatherCondition(dayCondition);
+            weatherIcon = WeatherImageUtils.getLargeArtResIdForWeatherCondition(dayCondition);
             weatherCondition = dayCondition;
         } else {
-            weatherIcon = MSunshineWeatherUtils.getLargeArtResIdForWeatherCondition(dayCondition);
+            weatherIcon = WeatherImageUtils.getLargeArtResIdForWeatherCondition(dayCondition);
             weatherCondition = nightCondition;
         }
         String date = cursor.getString(DetailActivity.INDEX_WEATHER_DATE);
@@ -121,16 +121,16 @@ public class DetailActivity extends AppCompatActivity implements
         mDetailBinding.weatherPrimary.weatherLowTemperature.setText(nightTemperature);
 
 
-        mDetailBinding.weatherDetail.dayWindDirectLabel.setText(NetworkData.getWeatherInfo(this, R.string.day_wind_direction));
+        mDetailBinding.weatherDetail.dayWindDirectLabel.setText(ParseWeatherData.getWeatherInfo(this, R.string.day_wind_direction));
         mDetailBinding.weatherDetail.dayWindDirect.setText(cursor.getString(DetailActivity.INDEX_WEATHER_DAY_WIND_DIRECTION));
 
-        mDetailBinding.weatherDetail.nightWindDirectLabel.setText(NetworkData.getWeatherInfo(this, R.string.night_wind_direction));
+        mDetailBinding.weatherDetail.nightWindDirectLabel.setText(ParseWeatherData.getWeatherInfo(this, R.string.night_wind_direction));
         mDetailBinding.weatherDetail.nightWindDirect.setText(cursor.getString(DetailActivity.INDEX_WEATHER_NIGHT_WIND_DIRECTION));
 
-        mDetailBinding.weatherDetail.dayWindPowerLabel.setText(NetworkData.getWeatherInfo(this, R.string.day_wind_power));
+        mDetailBinding.weatherDetail.dayWindPowerLabel.setText(ParseWeatherData.getWeatherInfo(this, R.string.day_wind_power));
         mDetailBinding.weatherDetail.dayWindPower.setText(cursor.getString(DetailActivity.INDEX_WEATHER_DAY_WIND_POWER));
 
-        mDetailBinding.weatherDetail.nightWindPowerLabel.setText(NetworkData.getWeatherInfo(this, R.string.night_wind_power));
+        mDetailBinding.weatherDetail.nightWindPowerLabel.setText(ParseWeatherData.getWeatherInfo(this, R.string.night_wind_power));
         mDetailBinding.weatherDetail.nightWindPower.setText(cursor.getString(DetailActivity.INDEX_WEATHER_NIGHT_WIND_POWER));
 
         weatherString = String.format("%s - %s\n%s - %s",

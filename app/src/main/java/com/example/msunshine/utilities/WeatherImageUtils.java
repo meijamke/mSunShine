@@ -2,7 +2,7 @@ package com.example.msunshine.utilities;
 
 import com.example.msunshine.R;
 
-public class MSunshineWeatherUtils {
+public class WeatherImageUtils {
 
     public static int getSmallIcResIdForWeatherCondition(String weatherCondition) {
         int resId = R.drawable.ic_logo;

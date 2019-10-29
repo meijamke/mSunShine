@@ -10,7 +10,7 @@ import android.net.Uri;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.example.msunshine.utilities.MSunshineDateUtils;
+import com.example.msunshine.utilities.DateUtils;
 
 public class WeatherProvider extends ContentProvider {
 
@@ -94,7 +94,7 @@ public class WeatherProvider extends ContentProvider {
                 try {
                     for (ContentValues value : values) {
                         String date = value.getAsString(WeatherContract.WeatherEntry.COLUMN_DATE);
-                        if (!(MSunshineDateUtils.isValidDate(date))) {
+                        if (!(DateUtils.isValidDate(date))) {
                             throw new IllegalArgumentException("Unsupported date format, date format should be \"yyyy-MM-dd\"");
                         }
                         long id = db.insert(WeatherContract.WeatherEntry.TABLE_NAME,
@@ -127,7 +127,7 @@ public class WeatherProvider extends ContentProvider {
             switch (mUriMatcher.match(uri)) {
                 case CODE_WEATHER:
                     String date = values.getAsString(WeatherContract.WeatherEntry.COLUMN_DATE);
-                    if (!(MSunshineDateUtils.isValidDate(date)))
+                    if (!(DateUtils.isValidDate(date)))
                         throw new IllegalArgumentException("Unsupported date format, date format should be \"yyyy/MM/dd\"");
                     long id = db.insert(WeatherContract.WeatherEntry.TABLE_NAME,
                             null,

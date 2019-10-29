@@ -5,7 +5,6 @@ import android.content.ContentValues;
 import android.content.Context;
 
 import com.example.msunshine.data.MSunshinePreference;
-import com.example.msunshine.data.NetworkData;
 import com.example.msunshine.data.WeatherContract;
 import com.example.msunshine.utilities.NetworkUtils;
 import com.example.msunshine.utilities.NotificationUtils;
@@ -20,8 +19,7 @@ class MSunshineSyncTask {
         try {
 
             String weatherJson = NetworkUtils.getResponseFromHttpUrl(url);
-            String[] weatherString = ParseJSONUtils.getForecastWeatherStringFromJSON(context, weatherJson, ParseJSONUtils.TYPE_WEATHER_DETAIL);
-            ContentValues[] weatherValues = NetworkData.stringToContentValues(weatherString, ParseJSONUtils.TYPE_WEATHER_DETAIL);
+            ContentValues[] weatherValues = ParseJSONUtils.getWeatherContentValuesFromJSON(context, weatherJson, ParseJSONUtils.TYPE_WEATHER_DETAIL);
 
             ContentResolver resolver = context.getContentResolver();
             resolver.delete(

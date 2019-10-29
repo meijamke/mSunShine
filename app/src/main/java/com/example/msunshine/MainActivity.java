@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.msunshine.data.MSunshinePreference;
 import com.example.msunshine.data.WeatherContract;
 import com.example.msunshine.sync.MSunshineSyncUtils;
+import com.example.msunshine.utilities.DataFormatUtils;
 import com.example.msunshine.utilities.ExplicitIntentActivityUtils;
 
 public class MainActivity extends AppCompatActivity implements
@@ -99,14 +100,11 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onStart() {
         super.onStart();
-
+        String city = MSunshinePreference.getPreferredWeatherCity(this);
+        mSearchCity.setText(city);
+        mSearchCity.setSelection(city.length());
         if (pref_edit_text_flag) {
-
-            String city = MSunshinePreference.getPreferredWeatherCity(this);
-            mSearchCity.setText(city);
-            mSearchCity.setSelection(city.length());
             MSunshineSyncUtils.startImmediateSync(this, mSearchCity.getText().toString());
-
             pref_edit_text_flag = false;
         }
     }
@@ -143,8 +141,12 @@ public class MainActivity extends AppCompatActivity implements
         switch (item.getItemId()) {
             case R.id.action_search:
                 mForecastAdapter.setWeatherData(null);
-                MSunshineSyncUtils.startImmediateSync(this, mSearchCity.getText().toString());
-                return true;
+                String city = mSearchCity.getText().toString();
+                if (DataFormatUtils.isChinese(this, city)) {
+                    MSunshineSyncUtils.startImmediateSync(this, city);
+                    return true;
+                }
+                break;
             case R.id.action_setting:
                 ExplicitIntentActivityUtils.toSetting(this);
                 return true;

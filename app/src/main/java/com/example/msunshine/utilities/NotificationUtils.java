@@ -35,7 +35,7 @@ public class NotificationUtils {
     public static void notifyUserTodayWeather(Context context) {
 
         //Date format:yyyy-MM-dd
-        String today = MSunshineDateUtils.getNormalizedDayNow();
+        String today = DateUtils.getNormalizedDayNow();
 
         Cursor mCursor = context.getContentResolver().query(
                 WeatherContract.WeatherEntry.CONTENT_URI,
@@ -52,13 +52,13 @@ public class NotificationUtils {
 
             int smallDayIcResId;
             String notificationText;
-            if (MSunshineDateUtils.getNormalizedHourNow() >= context.getResources().getInteger(R.integer.hour_between_night_and_day) &&
-                    MSunshineDateUtils.getNormalizedHourNow() <= context.getResources().getInteger(R.integer.hour_between_day_and_night)) {
-                smallDayIcResId = MSunshineWeatherUtils.getSmallIcResIdForWeatherCondition(dayCondition);
+            if (DateUtils.getNormalizedHourNow() >= context.getResources().getInteger(R.integer.hour_between_night_and_day) &&
+                    DateUtils.getNormalizedHourNow() <= context.getResources().getInteger(R.integer.hour_between_day_and_night)) {
+                smallDayIcResId = WeatherImageUtils.getSmallIcResIdForWeatherCondition(dayCondition);
                 notificationText = String.format("%s\n%s-%s",
                         dayCondition, dayTemp, nightTemp);
             } else {
-                smallDayIcResId = MSunshineWeatherUtils.getSmallIcResIdForWeatherCondition(nightCondition);
+                smallDayIcResId = WeatherImageUtils.getSmallIcResIdForWeatherCondition(nightCondition);
                 notificationText = String.format("%s\n%s-%s",
                         nightCondition, dayTemp, nightTemp);
             }

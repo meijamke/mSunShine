@@ -12,8 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.msunshine.data.MSunshinePreference;
-import com.example.msunshine.utilities.MSunshineDateUtils;
-import com.example.msunshine.utilities.MSunshineWeatherUtils;
+import com.example.msunshine.utilities.DateUtils;
+import com.example.msunshine.utilities.WeatherImageUtils;
 
 public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.ForecastAdapterViewHolder> {
 
@@ -54,14 +54,14 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
         int viewType = getItemViewType(position);
         int weatherIcon;
         String weatherCondition;
-        if (MSunshineDateUtils.getNormalizedHourNow() >= mContext.getResources().getInteger(R.integer.hour_between_night_and_day) &&
-                MSunshineDateUtils.getNormalizedHourNow() <= mContext.getResources().getInteger(R.integer.hour_between_day_and_night)) {
+        if (DateUtils.getNormalizedHourNow() >= mContext.getResources().getInteger(R.integer.hour_between_night_and_day) &&
+                DateUtils.getNormalizedHourNow() <= mContext.getResources().getInteger(R.integer.hour_between_day_and_night)) {
             switch (viewType) {
                 case TYPE_TODAY:
-                    weatherIcon = MSunshineWeatherUtils.getLargeArtResIdForWeatherCondition(dayCondition);
+                    weatherIcon = WeatherImageUtils.getLargeArtResIdForWeatherCondition(dayCondition);
                     break;
                 case TYPE_FUTURE_DAY:
-                    weatherIcon = MSunshineWeatherUtils.getSmallIcResIdForWeatherCondition(dayCondition);
+                    weatherIcon = WeatherImageUtils.getSmallIcResIdForWeatherCondition(dayCondition);
                     break;
                 default:
                     throw new IllegalArgumentException("Unknown view type ");
@@ -70,10 +70,10 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastAdapter.Foreca
         } else {
             switch (viewType) {
                 case TYPE_TODAY:
-                    weatherIcon = MSunshineWeatherUtils.getLargeArtResIdForWeatherCondition(dayCondition);
+                    weatherIcon = WeatherImageUtils.getLargeArtResIdForWeatherCondition(dayCondition);
                     break;
                 case TYPE_FUTURE_DAY:
-                    weatherIcon = MSunshineWeatherUtils.getSmallIcResIdForWeatherCondition(dayCondition);
+                    weatherIcon = WeatherImageUtils.getSmallIcResIdForWeatherCondition(dayCondition);
                     break;
                 default:
                     throw new IllegalArgumentException("Unknown view type ");

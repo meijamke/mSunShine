@@ -1,9 +1,11 @@
 package com.example.msunshine.utilities;
 
 
+import android.content.ContentValues;
 import android.content.Context;
 
-import com.example.msunshine.data.NetworkData;
+import com.example.msunshine.data.ParseWeatherData;
+import com.example.msunshine.data.WeatherContract;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -11,7 +13,6 @@ import org.json.JSONObject;
 
 public class ParseJSONUtils {
 
-    public static final int TYPE_WEATHER_SUMMARY = 0;
     public static final int TYPE_WEATHER_DETAIL = 1;
 
     /**
@@ -110,7 +111,7 @@ public class ParseJSONUtils {
      */
 
 
-    public static String[] getForecastWeatherStringFromJSON(Context context, String forecastJsonStr, int dataType) throws JSONException {
+    public static ContentValues[] getWeatherContentValuesFromJSON(Context context, String forecastJsonStr, int dataType) throws JSONException {
 
         //数据成功返回时code=1，失败时coed=0
         final String RESULT_CODE = "code";
@@ -141,7 +142,7 @@ public class ParseJSONUtils {
         if (forecastJson.has(RESULT_CODE)) {
             int code = forecastJson.getInt(RESULT_CODE);
             if (code == 0)
-                return new String[]{""};
+                return null;
         }
 
         JSONObject data = forecastJson.getJSONObject(RESULT_DATA);
@@ -149,7 +150,7 @@ public class ParseJSONUtils {
         String city = data.getString(ADDRESS);
         JSONArray forecast = data.getJSONArray(FORECAST);
 
-        String[] parsedWeatherData = new String[forecast.length()];
+        ContentValues[] weatherContentValues = new ContentValues[forecast.length()];
 
         for (int i = 0; i < forecast.length(); i++) {
             JSONObject dayForecast = forecast.getJSONObject(i);
@@ -165,28 +166,22 @@ public class ParseJSONUtils {
             String dayWindPower = dayForecast.getString(DAY_WIND_POWER).trim();
             String nightWindPower = dayForecast.getString(NIGHT_WIND_POWER).trim();
 
-            if (dataType == TYPE_WEATHER_SUMMARY)
-                parsedWeatherData[i] =
-                        date + "\n" +
-                                NetworkData.getWeekName(context, dayOfWeek) + "\n" +
-                                dayCondition + "\n" +
-                                nightCondition + "\n" +
-                                dayTemp + "\n" +
-                                nightTemp;
-            else if (dataType == TYPE_WEATHER_DETAIL)
-                parsedWeatherData[i] =
-                        date + "\n" +
-                                NetworkData.getWeekName(context, dayOfWeek) + "\n" +
-                                dayCondition + "\n" +
-                                nightCondition + "\n" +
-                                dayTemp + "\n" +
-                                nightTemp + "\n" +
-                                dayWindDirection + "\n" +
-                                nightWindDirection + "\n" +
-                                dayWindPower + "\n" +
-                                nightWindPower;
+            ContentValues weatherValues = new ContentValues();
+
+            weatherValues.put(WeatherContract.WeatherEntry.COLUMN_DATE, date);
+            weatherValues.put(WeatherContract.WeatherEntry.COLUMN_WEEK, ParseWeatherData.getWeekName(context, dayOfWeek));
+            weatherValues.put(WeatherContract.WeatherEntry.COLUMN_DAY_CONDITION, dayCondition);
+            weatherValues.put(WeatherContract.WeatherEntry.COLUMN_NIGHT_CONDITION, nightCondition);
+            weatherValues.put(WeatherContract.WeatherEntry.COLUMN_DAY_TEMP, dayTemp);
+            weatherValues.put(WeatherContract.WeatherEntry.COLUMN_NIGHT_TEMP, nightTemp);
+            weatherValues.put(WeatherContract.WeatherEntry.COLUMN_DAY_WIND_DIRECTION, dayWindDirection);
+            weatherValues.put(WeatherContract.WeatherEntry.COLUMN_NIGHT_WIND_DIRECTION, nightWindDirection);
+            weatherValues.put(WeatherContract.WeatherEntry.COLUMN_DAY_WIND_POWER, dayWindPower);
+            weatherValues.put(WeatherContract.WeatherEntry.COLUMN_NIGHT_WIND_POWER, nightWindPower);
+
+            weatherContentValues[i] = weatherValues;
         }
-        return parsedWeatherData;
+        return weatherContentValues;
     }
 
 }

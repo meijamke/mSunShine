@@ -8,7 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-public class MSunshineDateUtils {
+public class DateUtils {
 
     public static boolean isValidDate(String date) {
 //        date=date.trim();

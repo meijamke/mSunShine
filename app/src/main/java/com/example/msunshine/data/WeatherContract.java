@@ -3,7 +3,7 @@ package com.example.msunshine.data;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
-import com.example.msunshine.utilities.MSunshineDateUtils;
+import com.example.msunshine.utilities.DateUtils;
 
 public class WeatherContract {
 
@@ -32,7 +32,7 @@ public class WeatherContract {
         public static final String COLUMN_NIGHT_WIND_POWER = "nightWindPower";
 
         public static String getSQLSelectTodayForwards() {
-            return WeatherEntry.COLUMN_DATE + " >= " + "'" + MSunshineDateUtils.getNormalizedDayNow() + "'";
+            return WeatherEntry.COLUMN_DATE + " >= " + "'" + DateUtils.getNormalizedDayNow() + "'";
         }
     }
 }
