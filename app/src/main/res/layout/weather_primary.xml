@@ -3,15 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingStart="@dimen/weather_primary_horizontal_padding"
-        android:paddingLeft="@dimen/weather_primary_horizontal_padding"
-        android:paddingTop="@dimen/weather_primary_vertical_padding"
-        android:paddingEnd="@dimen/weather_primary_horizontal_padding"
-        android:paddingRight="@dimen/weather_primary_horizontal_padding"
-        android:paddingBottom="@dimen/weather_primary_vertical_padding">
+    <androidx.constraintlayout.widget.ConstraintLayout style="@style/TodayConstraintLayout">
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/horizontal_middle"

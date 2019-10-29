@@ -2,15 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
     android:background="@color/colorPrimary"
-    android:paddingStart="@dimen/list_item_padding_horizontal"
-    android:paddingLeft="@dimen/list_item_padding_horizontal"
-    android:paddingTop="@dimen/list_item_padding_vertical"
-    android:paddingEnd="@dimen/list_item_padding_horizontal"
-    android:paddingRight="@dimen/list_item_padding_horizontal"
-    android:paddingBottom="@dimen/list_item_padding_vertical">
+    style="@style/TodayConstraintLayout">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/horizontal_middle"

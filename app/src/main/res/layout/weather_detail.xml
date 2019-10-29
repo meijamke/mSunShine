@@ -23,11 +23,7 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/day_wind_direct_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/detail_accent_label"
-            android:textSize="@dimen/weather_detail_text_size"
-            app:fontFamily="sans-serif"
+            style="@style/DetailLabel"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -36,11 +32,7 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/night_wind_direct_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/detail_accent_label"
-            android:textSize="@dimen/weather_detail_text_size"
-            app:fontFamily="sans-serif"
+            style="@style/DetailLabel"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -49,11 +41,7 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/day_wind_power_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/detail_accent_label"
-            android:textSize="@dimen/weather_detail_text_size"
-            app:fontFamily="sans-serif"
+            style="@style/DetailLabel"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -62,11 +50,7 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/night_wind_power_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/detail_accent_label"
-            android:textSize="@dimen/weather_detail_text_size"
-            app:fontFamily="sans-serif"
+            style="@style/DetailLabel"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -75,40 +59,28 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/day_wind_direct"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:textSize="@dimen/weather_detail_text_size"
+            style="@style/DetailValue"
             app:layout_constraintBottom_toBottomOf="@+id/day_wind_direct_label"
             app:layout_constraintStart_toStartOf="@+id/horizontal_middle"
             tools:text="no wind" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/night_wind_direct"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:textSize="@dimen/weather_detail_text_size"
+            style="@style/DetailValue"
             app:layout_constraintBottom_toBottomOf="@+id/night_wind_direct_label"
             app:layout_constraintStart_toStartOf="@+id/horizontal_middle"
             tools:text="no wind" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/day_wind_power"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:textSize="@dimen/weather_detail_text_size"
+            style="@style/DetailValue"
             app:layout_constraintBottom_toBottomOf="@+id/day_wind_power_label"
             app:layout_constraintStart_toStartOf="@+id/horizontal_middle"
             tools:text="3 level" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/night_wind_power"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:textSize="@dimen/weather_detail_text_size"
+            style="@style/DetailValue"
             app:layout_constraintBottom_toBottomOf="@+id/night_wind_power_label"
             app:layout_constraintStart_toStartOf="@+id/horizontal_middle"
             tools:text="3 level" />
