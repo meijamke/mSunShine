@@ -24,6 +24,7 @@ import com.example.msunshine.utilities.DateUtils;
 import com.example.msunshine.utilities.ExplicitIntentActivityUtils;
 import com.example.msunshine.utilities.WeatherImageUtils;
 
+
 public class DetailActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -70,7 +71,6 @@ public class DetailActivity extends AppCompatActivity implements
 
         getSupportLoaderManager().initLoader(ID_WEATHER_DETAIL_CURSOR, null, this);
     }
-
 
     @NonNull
     @Override

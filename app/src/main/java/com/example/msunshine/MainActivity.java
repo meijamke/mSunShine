@@ -8,13 +8,15 @@ import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
@@ -26,6 +28,8 @@ import com.example.msunshine.data.WeatherContract;
 import com.example.msunshine.sync.MSunshineSyncUtils;
 import com.example.msunshine.utilities.DataFormatUtils;
 import com.example.msunshine.utilities.ExplicitIntentActivityUtils;
+
+import java.lang.reflect.Method;
 
 public class MainActivity extends AppCompatActivity implements
         ForecastAdapter.OnClickListItemListener,
@@ -50,10 +54,12 @@ public class MainActivity extends AppCompatActivity implements
     public static final int INDEX_WEATHER_DAY_TEMP = 4;
     public static final int INDEX_WEATHER_NIGHT_TEMP = 5;
 
+    private String mSearchCity;
 
+    private Toolbar toolbar;
+    private SearchView searchView;
     private RecyclerView mRecyclerView;
     private ForecastAdapter mForecastAdapter;
-    private EditText mSearchCity;
     private TextView mErrorMsgDisplay;
     private ProgressBar mLoadingIndicator;
 
@@ -63,9 +69,8 @@ public class MainActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        ActionBar actionBar = getSupportActionBar();
-//        if (actionBar != null)
-//            actionBar.setElevation(0f);
+
+        setToolbar();
 
         mRecyclerView = findViewById(R.id.rv_forecast);
         mForecastAdapter = new ForecastAdapter(this, this);
@@ -75,7 +80,6 @@ public class MainActivity extends AppCompatActivity implements
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
 
-        mSearchCity = findViewById(R.id.et_search);
         mErrorMsgDisplay = findViewById(R.id.tv_error_message);
         mLoadingIndicator = findViewById(R.id.pb_search_progress);
 
@@ -87,11 +91,20 @@ public class MainActivity extends AppCompatActivity implements
         //启动APP时根据 偏好设置的数值 初始化
         getSupportLoaderManager().initLoader(ID_WEATHER_CURSOR, null, this);
 
-        String city = MSunshinePreference.getPreferredWeatherCity(this);
-        mSearchCity.setText(city);
-        mSearchCity.setSelection(city.length());
-        MSunshineSyncUtils.initialize(this, mSearchCity.getText().toString());
+        mSearchCity = MSunshinePreference.getPreferredWeatherCity(this);
+        MSunshineSyncUtils.initialize(this, mSearchCity);
 
+    }
+
+    private void setToolbar() {
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setDisplayShowTitleEnabled(false);
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_logo);
+        }
     }
 
     /**
@@ -100,11 +113,9 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onStart() {
         super.onStart();
-        String city = MSunshinePreference.getPreferredWeatherCity(this);
-        mSearchCity.setText(city);
-        mSearchCity.setSelection(city.length());
+        mSearchCity = MSunshinePreference.getPreferredWeatherCity(this);
         if (pref_edit_text_flag) {
-            MSunshineSyncUtils.startImmediateSync(this, mSearchCity.getText().toString());
+            MSunshineSyncUtils.startImmediateSync(this, mSearchCity);
             pref_edit_text_flag = false;
         }
     }
@@ -131,22 +142,43 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
-        return true;
+
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        searchView = (SearchView) searchItem.getActionView();
+        searchView.setQueryHint(getString(R.string.edit_hint));
+//        ImageView closeButton=searchView.findViewById(R.id.search_close_btn);
+//        closeButton.setImageResource(R.drawable.art_close_orange_24dp);
+        //有文字显示X按钮，无文字不显示
+        searchView.onActionViewExpanded();
+        searchView.setIconified(false);
+        //显示提交按钮
+//        searchView.setSubmitButtonEnabled(true);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                if (DataFormatUtils.isChinese(getApplicationContext(), query)) {
+                    mSearchCity = query;
+                    MSunshineSyncUtils.startImmediateSync(getApplicationContext(), mSearchCity);
+                    return true;
+                }
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+        return super.onCreateOptionsMenu(menu);
     }
+
     /**
      * 点击菜单栏各个项目时回调的函数
      * **/
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_search:
-                mForecastAdapter.setWeatherData(null);
-                String city = mSearchCity.getText().toString();
-                if (DataFormatUtils.isChinese(this, city)) {
-                    MSunshineSyncUtils.startImmediateSync(this, city);
-                    return true;
-                }
-                break;
             case R.id.action_setting:
                 ExplicitIntentActivityUtils.toSetting(this);
                 return true;
@@ -154,6 +186,25 @@ public class MainActivity extends AppCompatActivity implements
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+
+    // 使用反射，让菜单同时显示图标和文字
+    @Override
+    public boolean onMenuOpened(int featureId, Menu menu) {
+        if (menu != null) {
+            if (menu.getClass().getSimpleName().equalsIgnoreCase("MenuBuilder")) {
+                try {
+                    @SuppressLint("PrivateApi")
+                    Method method = menu.getClass().getDeclaredMethod("setOptionalIconsVisible", Boolean.TYPE);
+                    method.setAccessible(true);
+                    method.invoke(menu, true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return super.onMenuOpened(featureId, menu);
     }
 
     public void showWeatherData() {

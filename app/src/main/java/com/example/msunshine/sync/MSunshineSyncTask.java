@@ -19,7 +19,7 @@ class MSunshineSyncTask {
         try {
 
             String weatherJson = NetworkUtils.getResponseFromHttpUrl(url);
-            ContentValues[] weatherValues = ParseJSONUtils.getWeatherContentValuesFromJSON(context, weatherJson, ParseJSONUtils.TYPE_WEATHER_DETAIL);
+            ContentValues[] weatherValues = ParseJSONUtils.getWeatherContentValuesFromJSON(context, weatherJson);
 
             ContentResolver resolver = context.getContentResolver();
             resolver.delete(

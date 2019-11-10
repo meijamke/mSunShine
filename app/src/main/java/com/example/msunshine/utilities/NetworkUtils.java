@@ -60,7 +60,7 @@ public class NetworkUtils {
 
     /**
      * OkHttp works on Android 5.0+ (API level 21+) and on Java 8+.
-     * <p>
+     *
      * The OkHttp 3.12.x branch supports Android 2.3+ (API level 9+) and Java 7+.
      * These platforms lack support for TLS 1.2 and should not be used.
      * But because upgrading is difficult we will backport critical fixes to the 3.12.x branch

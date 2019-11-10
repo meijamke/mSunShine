@@ -13,8 +13,6 @@ import org.json.JSONObject;
 
 public class ParseJSONUtils {
 
-    public static final int TYPE_WEATHER_DETAIL = 1;
-
     /**
      * 返回数据的参考格式
      * {
@@ -111,7 +109,7 @@ public class ParseJSONUtils {
      */
 
 
-    public static ContentValues[] getWeatherContentValuesFromJSON(Context context, String forecastJsonStr, int dataType) throws JSONException {
+    public static ContentValues[] getWeatherContentValuesFromJSON(Context context, String forecastJsonStr) throws JSONException {
 
         //数据成功返回时code=1，失败时coed=0
         final String RESULT_CODE = "code";

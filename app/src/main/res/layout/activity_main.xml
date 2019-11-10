@@ -1,27 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".MainActivity">
 
-    <androidx.appcompat.widget.AppCompatEditText
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textEditPasteWindowLayout="@android:anim/bounce_interpolator"
-        android:id="@+id/et_search"
-        android:background="@color/colorPrimaryLight"
-        android:hint="@string/edit_hint"
-        android:autofillHints="@string/edit_hint"
-        android:inputType="textAutoComplete|textImeMultiLine"
-        android:textSize="@dimen/search_edit_text_size"
-        tools:ignore="UnusedAttribute" />
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:layout_scrollFlags="scroll|enterAlways|snap"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+        </androidx.appcompat.widget.Toolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="39dp"
-        android:id="@+id/rv_forecast">
+        android:id="@+id/rv_forecast"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
     </androidx.recyclerview.widget.RecyclerView>
 
@@ -42,4 +48,4 @@
         android:layout_gravity="center"
         android:visibility="invisible" />
 
-</FrameLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

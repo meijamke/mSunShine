@@ -10,15 +10,17 @@
         <item name="android:preferenceStyle">@style/PreferenceThemeOverlay</item>
     </style>
 
-    <!--ActionBar Sunshine logo, no title-->
-    <style name="ActionBar.MSunShine.Logo.NoTitle" parent="Widget.AppCompat.Light.ActionBar.Solid.Inverse">
-        <item name="displayOptions">useLogo|showHome</item>
-        <item name="logo">@drawable/ic_logo</item>
+    <style name="MainActivity" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="searchViewStyle">@style/SearchView</item>
     </style>
 
-    <!--MainActivity theme-->
-    <style name="AppTheme.MainActivity" parent="AppTheme">
-        <item name="actionBarStyle">@style/ActionBar.MSunShine.Logo.NoTitle</item>
+    <style name="SearchView" parent="Widget.AppCompat.SearchView">
+        <item name="searchHintIcon">@drawable/art_search_orange_24dp</item>
+        <item name="closeIcon">@drawable/art_close_orange_24dp</item>
     </style>
 
     <!--weather_detail label style-->
